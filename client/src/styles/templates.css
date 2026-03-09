@@ -1,0 +1,755 @@
+/* ============================================
+   Template-Specific Styles
+   ============================================ */
+
+/* === TECH TEMPLATE === */
+.template-tech {
+    font-family: 'Inter', sans-serif;
+}
+
+.tech-header {
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+    padding: 2.5rem 2rem;
+    color: white;
+}
+
+.tech-header-content {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.tech-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 12px;
+    object-fit: cover;
+    border: 3px solid #06b6d4;
+}
+
+.tech-name {
+    font-size: 2rem;
+    font-weight: 900;
+    letter-spacing: -1px;
+    margin-bottom: 0.25rem;
+}
+
+.tech-designation {
+    color: #06b6d4;
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.tech-contact {
+    display: flex;
+    gap: 1.25rem;
+    flex-wrap: wrap;
+    font-size: 0.8rem;
+    color: #94a3b8;
+}
+
+.tech-body {
+    padding: 2rem;
+}
+
+.tech-section {
+    margin-bottom: 1.75rem;
+}
+
+.tech-section-title {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #0f172a;
+    border-bottom: 2px solid #06b6d4;
+    padding-bottom: 0.4rem;
+    margin-bottom: 1rem;
+    font-weight: 800;
+}
+
+.tech-skills-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.tech-skill-badge {
+    background: #f0f9ff;
+    color: #0369a1;
+    padding: 0.3rem 0.75rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border: 1px solid #bae6fd;
+}
+
+.tech-text {
+    color: #374151;
+    font-size: 0.85rem;
+    line-height: 1.6;
+}
+
+.tech-entry {
+    margin-bottom: 1.25rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.tech-entry:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.tech-entry-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 0.25rem;
+}
+
+.tech-entry-header strong {
+    font-size: 0.95rem;
+    color: #0f172a;
+}
+
+.tech-date {
+    font-size: 0.75rem;
+    color: #64748b;
+    white-space: nowrap;
+}
+
+.tech-company {
+    font-size: 0.8rem;
+    color: #64748b;
+    margin-bottom: 0.5rem;
+}
+
+.tech-link {
+    font-size: 0.75rem;
+    color: #06b6d4;
+    text-decoration: underline;
+}
+
+.tech-bullets {
+    list-style: none;
+    padding: 0;
+    margin: 0.5rem 0 0;
+}
+
+.tech-bullets li {
+    font-size: 0.82rem;
+    color: #374151;
+    padding-left: 1rem;
+    position: relative;
+    margin-bottom: 0.3rem;
+    line-height: 1.5;
+}
+
+.tech-bullets li::before {
+    content: '▸';
+    position: absolute;
+    left: 0;
+    color: #06b6d4;
+    font-weight: bold;
+}
+
+
+/* === FINANCE TEMPLATE === */
+.template-finance {
+    font-family: 'Georgia', 'Times New Roman', serif;
+}
+
+.finance-header {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 2.5rem 2rem 1rem;
+}
+
+.finance-avatar {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #b8860b;
+}
+
+.finance-name {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: #1a1a1a;
+    letter-spacing: -0.5px;
+}
+
+.finance-designation {
+    color: #6b7280;
+    font-size: 1rem;
+    font-style: italic;
+}
+
+.finance-contact-bar {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    padding: 0.75rem 2rem;
+    background: #f9f7f4;
+    border-top: 2px solid #b8860b;
+    border-bottom: 1px solid #e5e0d5;
+    font-size: 0.8rem;
+    color: #4b5563;
+    font-family: 'Inter', sans-serif;
+}
+
+.finance-body {
+    padding: 1.5rem 2rem 2rem;
+}
+
+.finance-section {
+    margin-bottom: 1.5rem;
+}
+
+.finance-section-title {
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: #1a1a1a;
+    border-bottom: 1px solid #d4af37;
+    padding-bottom: 0.4rem;
+    margin-bottom: 1rem;
+    font-weight: 700;
+    font-family: 'Inter', sans-serif;
+}
+
+.finance-text {
+    color: #374151;
+    font-size: 0.85rem;
+    line-height: 1.7;
+}
+
+.finance-entry {
+    margin-bottom: 1.25rem;
+}
+
+.finance-entry-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+}
+
+.finance-entry-header strong {
+    font-size: 0.95rem;
+    color: #1a1a1a;
+}
+
+.finance-company {
+    font-size: 0.8rem;
+    color: #6b7280;
+    font-style: italic;
+    margin: 0;
+}
+
+.finance-date {
+    font-size: 0.75rem;
+    color: #6b7280;
+    white-space: nowrap;
+    font-family: 'Inter', sans-serif;
+}
+
+.finance-bullets {
+    list-style: disc;
+    padding-left: 1.25rem;
+    margin: 0.5rem 0 0;
+}
+
+.finance-bullets li {
+    font-size: 0.82rem;
+    color: #374151;
+    margin-bottom: 0.25rem;
+    line-height: 1.6;
+}
+
+
+/* === HEALTHCARE TEMPLATE === */
+.template-healthcare {
+    font-family: 'Inter', sans-serif;
+}
+
+.hc-layout {
+    display: grid;
+    grid-template-columns: 250px 1fr;
+    min-height: 800px;
+}
+
+.hc-sidebar {
+    background: #0d4f4f;
+    color: white;
+    padding: 2rem 1.5rem;
+}
+
+.hc-avatar {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    border-radius: 12px;
+    margin-bottom: 1.25rem;
+    border: 3px solid rgba(255, 255, 255, 0.2);
+}
+
+.hc-name {
+    font-size: 1.4rem;
+    font-weight: 800;
+    margin-bottom: 0.25rem;
+}
+
+.hc-designation {
+    color: #5eead4;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+}
+
+.hc-sidebar-section {
+    margin-bottom: 1.5rem;
+}
+
+.hc-sidebar-title {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #5eead4;
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.4rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.hc-sidebar-text {
+    font-size: 0.78rem;
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 0.3rem;
+    line-height: 1.4;
+    word-break: break-word;
+}
+
+.hc-skills-list {
+    list-style: none;
+    padding: 0;
+}
+
+.hc-skills-list li {
+    font-size: 0.78rem;
+    padding: 0.3rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.hc-cert-item {
+    margin-bottom: 0.75rem;
+}
+
+.hc-cert-item strong {
+    font-size: 0.82rem;
+    display: block;
+    margin-bottom: 0.15rem;
+}
+
+.hc-main {
+    padding: 2rem;
+}
+
+.hc-section {
+    margin-bottom: 1.75rem;
+}
+
+.hc-section-title {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #0d4f4f;
+    border-bottom: 2px solid #0d4f4f;
+    padding-bottom: 0.4rem;
+    margin-bottom: 1rem;
+    font-weight: 800;
+}
+
+.hc-text {
+    font-size: 0.85rem;
+    color: #374151;
+    line-height: 1.6;
+}
+
+.hc-entry {
+    margin-bottom: 1.25rem;
+}
+
+.hc-entry-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+}
+
+.hc-entry-header strong {
+    font-size: 0.95rem;
+    color: #111827;
+}
+
+.hc-date {
+    font-size: 0.75rem;
+    color: #6b7280;
+    white-space: nowrap;
+}
+
+.hc-company {
+    font-size: 0.8rem;
+    color: #6b7280;
+    margin: 0 0 0.4rem;
+}
+
+.hc-bullets {
+    list-style: none;
+    padding: 0;
+    margin: 0.4rem 0 0;
+}
+
+.hc-bullets li {
+    font-size: 0.82rem;
+    color: #374151;
+    padding-left: 1rem;
+    position: relative;
+    margin-bottom: 0.3rem;
+    line-height: 1.5;
+}
+
+.hc-bullets li::before {
+    content: '•';
+    position: absolute;
+    left: 0;
+    color: #0d9488;
+    font-weight: bold;
+}
+
+
+/* === CREATIVE TEMPLATE === */
+.template-creative {
+    font-family: 'Outfit', 'Inter', sans-serif;
+}
+
+.creative-header {
+    position: relative;
+    padding: 2.5rem 2rem;
+    min-height: 160px;
+    overflow: hidden;
+}
+
+.creative-header-bg {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, #7c3aed, #c026d3, #f472b6);
+    opacity: 0.95;
+}
+
+.creative-header-content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    color: white;
+}
+
+.creative-avatar {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid rgba(255, 255, 255, 0.4);
+}
+
+.creative-name {
+    font-size: 2.4rem;
+    font-weight: 900;
+    letter-spacing: -1.5px;
+}
+
+.creative-designation {
+    font-size: 1.1rem;
+    font-weight: 500;
+    opacity: 0.9;
+    margin-bottom: 0.5rem;
+}
+
+.creative-contact {
+    display: flex;
+    gap: 1.25rem;
+    flex-wrap: wrap;
+    font-size: 0.8rem;
+    opacity: 0.8;
+}
+
+.creative-body {
+    padding: 2rem;
+}
+
+.creative-section {
+    margin-bottom: 1.75rem;
+}
+
+.creative-section-title {
+    font-size: 1rem;
+    font-weight: 800;
+    color: #7c3aed;
+    margin-bottom: 1rem;
+    padding-left: 0.75rem;
+    border-left: 4px solid #c026d3;
+}
+
+.creative-text {
+    color: #374151;
+    font-size: 0.85rem;
+    line-height: 1.7;
+}
+
+.creative-skills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.creative-skill-tag {
+    background: linear-gradient(135deg, #ede9fe, #fae8ff);
+    color: #7c3aed;
+    padding: 0.35rem 0.85rem;
+    border-radius: 100px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border: 1px solid #ddd6fe;
+}
+
+.creative-projects-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+}
+
+.creative-project-card {
+    background: #faf5ff;
+    border: 1px solid #ede9fe;
+    border-radius: 10px;
+    padding: 1rem;
+}
+
+.creative-project-card h4 {
+    font-size: 0.9rem;
+    color: #1a1a1a;
+    margin-bottom: 0.3rem;
+}
+
+.creative-project-card p {
+    font-size: 0.78rem;
+    color: #6b7280;
+    line-height: 1.5;
+}
+
+.creative-link {
+    font-size: 0.75rem;
+    color: #7c3aed;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-block;
+    margin-top: 0.3rem;
+}
+
+.creative-entry {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+}
+
+.creative-entry-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #7c3aed, #c026d3);
+    margin-top: 0.4rem;
+    flex-shrink: 0;
+}
+
+.creative-entry-content {
+    flex: 1;
+}
+
+.creative-entry-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+}
+
+.creative-entry-header strong {
+    font-size: 0.95rem;
+    color: #1a1a1a;
+}
+
+.creative-date {
+    font-size: 0.75rem;
+    color: #9ca3af;
+}
+
+.creative-company {
+    font-size: 0.8rem;
+    color: #6b7280;
+    margin: 0 0 0.4rem;
+}
+
+.creative-bullets {
+    list-style: none;
+    padding: 0;
+    margin: 0.4rem 0 0;
+}
+
+.creative-bullets li {
+    font-size: 0.82rem;
+    color: #374151;
+    padding-left: 1rem;
+    position: relative;
+    margin-bottom: 0.25rem;
+    line-height: 1.5;
+}
+
+.creative-bullets li::before {
+    content: '◆';
+    position: absolute;
+    left: 0;
+    color: #c026d3;
+    font-size: 0.5rem;
+    top: 0.3rem;
+}
+
+
+/* === GENERAL TEMPLATE === */
+.template-general {
+    font-family: 'Inter', sans-serif;
+}
+
+.general-header {
+    padding: 2rem 2rem 1.25rem;
+    border-bottom: 3px solid #3b82f6;
+}
+
+.general-header-top {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    margin-bottom: 0.75rem;
+}
+
+.general-avatar {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #3b82f6;
+}
+
+.general-name {
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: #111827;
+    letter-spacing: -1px;
+}
+
+.general-designation {
+    color: #3b82f6;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.general-contact {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    font-size: 0.8rem;
+    color: #6b7280;
+}
+
+.general-body {
+    padding: 1.5rem 2rem 2rem;
+}
+
+.general-section {
+    margin-bottom: 1.5rem;
+}
+
+.general-section-title {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: #111827;
+    border-bottom: 1px solid #e5e7eb;
+    padding-bottom: 0.35rem;
+    margin-bottom: 1rem;
+    font-weight: 800;
+}
+
+.general-text {
+    color: #374151;
+    font-size: 0.85rem;
+    line-height: 1.65;
+}
+
+.general-entry {
+    margin-bottom: 1.25rem;
+}
+
+.general-entry-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+}
+
+.general-entry-header strong {
+    font-size: 0.95rem;
+    color: #111827;
+}
+
+.general-company {
+    font-size: 0.8rem;
+    color: #6b7280;
+    margin: 0 0 0.4rem;
+}
+
+.general-date {
+    font-size: 0.75rem;
+    color: #6b7280;
+    white-space: nowrap;
+}
+
+.general-bullets {
+    list-style: disc;
+    padding-left: 1.25rem;
+    margin: 0.4rem 0 0;
+}
+
+.general-bullets li {
+    font-size: 0.82rem;
+    color: #374151;
+    margin-bottom: 0.25rem;
+    line-height: 1.55;
+}
+
+
+/* === PRINT OVERRIDES === */
+@media print {
+    .preview-container {
+        box-shadow: none !important;
+        border-radius: 0 !important;
+    }
+
+    .hc-layout {
+        grid-template-columns: 220px 1fr;
+    }
+
+    .creative-projects-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
