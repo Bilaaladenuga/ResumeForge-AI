@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
-import { Cpu, Sparkles, Target, Wand2, Wrench } from 'lucide-react';
-import { generateSummary, tailorSummary, powerUpBullet, generateSkills, checkApiKey } from '../services/ai';
+import { Cpu, Sparkles, Target, Wand2, Wrench, FileText, Activity, Copy, Check } from 'lucide-react';
+import { generateSummary, tailorSummary, powerUpBullet, generateSkills, checkApiKey, generateCoverLetter, analyzeATSCompatibility } from '../services/ai';
 
 const AIPanel = ({ formData, setFormData, industry, onOpenSettings }) => {
     const [loading, setLoading] = useState({});
     const [jobDescription, setJobDescription] = useState('');
     const [bulletInput, setBulletInput] = useState('');
     const [bulletResult, setBulletResult] = useState('');
+    const [coverLetter, setCoverLetter] = useState('');
+    const [atsData, setAtsData] = useState(null);
+    const [copied, setCopied] = useState(false);
 
     const hasApiKey = checkApiKey();
 
@@ -77,6 +80,59 @@ const AIPanel = ({ formData, setFormData, industry, onOpenSettings }) => {
         } finally {
             setLoading(prev => ({ ...prev, skills: false }));
         }
+    };
+
+    const handleGenerateCoverLetter = async () => {
+        if (!hasApiKey || !jobDescription.trim()) return;
+        setLoading(prev => ({ ...prev, coverletter: true }));
+        try {
+            const result = await generateCoverLetter({
+                name: `${formData.firstName || ''} ${formData.lastName || ''}`.trim(),
+                role: formData.designation || '',
+                experience: (formData.experiences || []).map(e => `${e.title} at ${e.company}`).join(', '),
+                skills: formData.skillsRaw || '',
+                jobDescription,
+                industry
+            });
+            setCoverLetter(result);
+        } catch (err) {
+            console.error('Cover letter generation failed:', err);
+        } finally {
+            setLoading(prev => ({ ...prev, coverletter: false }));
+        }
+    };
+
+    const handleATSCheck = async () => {
+        if (!hasApiKey || !jobDescription.trim()) return;
+        setLoading(prev => ({ ...prev, ats: true }));
+        try {
+            const result = await analyzeATSCompatibility({
+                role: formData.designation || '',
+                summary: formData.summary || '',
+                skills: formData.skillsRaw || '',
+                experience: (formData.experiences || []).map(e => `${e.title} at ${e.company}: ${e.description}`).join('. '),
+                jobDescription
+            });
+
+            // Parse the custom format
+            const scoreMatch = result.match(/SCORE:\s*(\d+)/);
+            const tips = result.split('\n').filter(line => line.includes('TIP')).map(line => line.split(':')[1].trim());
+
+            setAtsData({
+                score: scoreMatch ? parseInt(scoreMatch[1]) : 0,
+                tips: tips.length ? tips : ["Focus on core keywords", "Quantify achievements", "Align role titles"]
+            });
+        } catch (err) {
+            console.error('ATS check failed:', err);
+        } finally {
+            setLoading(prev => ({ ...prev, ats: false }));
+        }
+    };
+
+    const copyToClipboard = () => {
+        navigator.clipboard.writeText(coverLetter);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
     };
 
     return (
@@ -177,6 +233,68 @@ const AIPanel = ({ formData, setFormData, industry, onOpenSettings }) => {
                 >
                     {loading.skills ? 'Enhancing...' : 'AI Enhance Skills'}
                 </button>
+            </div>
+
+            {/* AI Cover Letter */}
+            <div className="ai-feature">
+                <h4><FileText size={14} /> AI Cover Letter</h4>
+                <p style={{ fontSize: '0.75rem', color: 'var(--text-dim)', marginBottom: '0.75rem' }}>
+                    Craft a professional cover letter that bridges your resume to this job.
+                </p>
+                <button
+                    className="btn btn-sm btn-secondary"
+                    onClick={handleGenerateCoverLetter}
+                    disabled={loading.coverletter || !jobDescription.trim()}
+                    style={{ width: '100%', marginBottom: coverLetter ? '1rem' : 0 }}
+                >
+                    {loading.coverletter ? 'Writing...' : 'Generate Cover Letter'}
+                </button>
+                {coverLetter && (
+                    <div className="ai-result-box">
+                        <div className="ai-result-header">
+                            <span>Cover Letter Result</span>
+                            <button className="btn-icon-sm" onClick={copyToClipboard}>
+                                {copied ? <Check size={12} color="var(--success)" /> : <Copy size={12} />}
+                            </button>
+                        </div>
+                        <div className="ai-result-content pre-wrap">{coverLetter}</div>
+                    </div>
+                )}
+            </div>
+
+            {/* ATS Compatibility Score */}
+            <div className="ai-feature">
+                <h4><Activity size={14} /> ATS Health Check</h4>
+                <p style={{ fontSize: '0.75rem', color: 'var(--text-dim)', marginBottom: '0.75rem' }}>
+                    Scan your resume against the Job Description to see how you rank.
+                </p>
+                <button
+                    className="btn btn-sm btn-accent"
+                    onClick={handleATSCheck}
+                    disabled={loading.ats || !jobDescription.trim()}
+                    style={{ width: '100%', marginBottom: atsData ? '1rem' : 0 }}
+                >
+                    {loading.ats ? 'Analyzing...' : 'Run ATS Audit'}
+                </button>
+                {atsData && (
+                    <div className="ats-result">
+                        <div className="ats-score-container">
+                            <div className="ats-score-circle" style={{ '--score': `${atsData.score}%` }}>
+                                <span>{atsData.score}</span>
+                            </div>
+                            <div className="ats-score-info">
+                                <strong>ATS Match Score</strong>
+                                <span>{atsData.score > 80 ? 'Excellent Match!' : atsData.score > 50 ? 'Strong Potential' : 'Needs Optimization'}</span>
+                            </div>
+                        </div>
+                        <div className="ats-tips">
+                            <span className="tips-label">Optimization Tips:</span>
+                            <ul>
+                                {atsData.tips.map((tip, idx) => <li key={idx}>{tip}</li>)}
+                            </ul>
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );

@@ -86,6 +86,55 @@ Rules:
     return result.response.text();
 };
 
+export const generateCoverLetter = async ({ name, role, experience, skills, jobDescription, industry }) => {
+    const model = getModel();
+    const prompt = `You are a professional career coach and resume writer for the ${industry || 'general'} industry.
+Write a personalized, high-impact cover letter for:
+- Name: ${name}
+- Target Role: ${role}
+- Experience Highlight: ${experience}
+- Key Skills: ${skills}
+- Job Description: ${jobDescription}
+
+Rules:
+- Professional and enthusiastic tone
+- 300-400 words
+- Directly address how the experience matches the job description
+- Use standard business letter format
+- Do NOT include markdown formatting
+- Return ONLY the cover letter text`;
+
+    const result = await model.generateContent(prompt);
+    return result.response.text();
+};
+
+export const analyzeATSCompatibility = async ({ role, summary, skills, experience, jobDescription }) => {
+    const model = getModel();
+    const prompt = `You are an ATS (Applicant Tracking System) algorithm expert. 
+Analyze the compatibility between this resume and the job description.
+
+Resume Data:
+- Role: ${role}
+- Summary: ${summary}
+- Skills: ${skills}
+- Experience: ${experience}
+
+Job Description:
+${jobDescription}
+
+Rules:
+- Provide a score from 0-100 based on keyword match, role alignment, and experience.
+- Provide 3 specific improvement tips to increase the score.
+- Return the response in this exact format:
+  SCORE: [number]
+  TIP1: [tip]
+  TIP2: [tip]
+  TIP3: [tip]`;
+
+    const result = await model.generateContent(prompt);
+    return result.response.text();
+};
+
 export const checkApiKey = () => {
     return !!localStorage.getItem('gemini_api_key');
 };
