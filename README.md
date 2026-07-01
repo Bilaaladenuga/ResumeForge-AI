@@ -1,153 +1,146 @@
-# ✨ ResumeForge AI
+# ResumeForge AI
 
-> **AI-Powered Resume Builder** — Craft professional, ATS-optimized resumes in minutes with Google Gemini AI and industry-specific templates.
+ResumeForge AI is an AI-powered resume builder for creating polished, ATS-friendly resumes with industry-specific templates and Google Gemini content assistance.
 
-![Landing Page](screenshots/landing-page.png)
+The project was migrated from Vite to Next.js and now uses the Next App Router for the main pages:
 
----
+- `/` - landing page
+- `/templates` - template selector
+- `/builder/[templateId]` - resume builder for a selected template
 
-## 🚀 Features
+## Features
 
-### 🤖 AI-Powered Content Generation
-Powered by **Google Gemini AI** (free tier), ResumeForge intelligently crafts and enhances your resume content:
+- AI resume summary generation with Google Gemini
+- Resume tailoring from a pasted job description
+- Bullet point improvement for stronger achievement statements
+- AI skills enhancement
+- ATS compatibility analysis
+- Cover letter generation
+- Five resume templates: Tech, Finance, Healthcare, Creative, and General
+- Live resume preview while editing
+- Profile photo upload
+- Print/PDF export through the browser print flow
+- Responsive dark glass-style interface
 
-- **AI Summary Generator** — Automatically creates a professional summary tailored to your industry, role, and experience
-- **Resume Tailor** — Paste any job description and AI rewrites your summary to match the role's requirements
-- **Bullet Power-Up** — Transforms simple task descriptions into quantified, impactful achievement statements
-- **AI Skills Enhancer** — Organizes and refines your raw skills list for maximum ATS impact
-
-### 📋 5 Industry-Specific Templates
-
-Each template is professionally designed with tailored section ordering, color schemes, and typography:
-
-| Template | Best For | Key Features |
-|----------|----------|-------------|
-| **Tech / IT** | Software Engineers, Data Scientists, DevOps | Skills-first layout, tech skill badges, project highlights |
-| **Finance** | Banking, Accounting, Financial Services | Conservative serif styling, experience-focused, gold accents |
-| **Healthcare** | Doctors, Nurses, Medical Professionals | Two-column sidebar, certifications section, teal clinical theme |
-| **Creative / Design** | Designers, Artists, Creative Professionals | Bold gradient header, portfolio grid, timeline-style entries |
-| **General** | Any Industry | Classic ATS-friendly layout, balanced sections, blue professional theme |
-
-![Template Selector](screenshots/template-selector.png)
-
-### 📝 Comprehensive Resume Builder
-
-- **Multi-section form** — About, Experience, Education, Projects, Skills, Achievements
-- **Dynamic entries** — Add/remove unlimited experience, education, project, and achievement entries
-- **Live preview** — See your resume update in real-time as you type
-- **Profile photo upload** — Add a professional headshot directly
-- **Collapsible sections** — Clean, organized form interface
-
-![Builder - Tech Template](screenshots/builder-tech.png)
-
-### 🎨 Premium Design System
-
-- Dark glassmorphism UI with smooth animations
-- Gradient text effects and glass card components
-- Fully responsive across desktop, tablet, and mobile
-- Print-optimized CSS for clean PDF exports
-
-### 📄 Instant PDF Export
-
-Click **"Export PDF"** to generate a clean, print-ready resume — no watermarks, no sign-up required.
-
----
-
-## 🏥 Template Previews
-
-### Healthcare Template
-![Healthcare Builder](screenshots/builder-healthcare.png)
-
-### Creative / Design Template
-![Creative Builder](screenshots/builder-creative.png)
-
----
-
-## 🛠️ Tech Stack
+## Tech Stack
 
 | Technology | Purpose |
-|-----------|---------|
-| **React 18** | UI framework |
-| **Vite** | Build tool & dev server |
-| **React Router** | Client-side routing |
-| **Framer Motion** | Animations |
-| **Lucide React** | Icon library |
-| **Google Gemini AI** | AI content generation |
-| **Vanilla CSS** | Custom design system |
+| --- | --- |
+| Next.js 16 | App framework and routing |
+| React 19 | UI framework |
+| Framer Motion | UI animation |
+| Lucide React | Icons |
+| Google Generative AI SDK | Gemini integration |
+| Tailwind CSS 4 tooling | PostCSS/Tailwind setup |
+| CSS | Custom app and resume template styling |
+| ESLint | Code quality checks |
 
----
-
-## 📦 Getting Started
+## Getting Started
 
 ### Prerequisites
-- **Node.js** 18+ installed
-- A [Google Gemini API key](https://aistudio.google.com/apikey) (free)
+
+- Node.js 20 or newer is recommended for the current Next.js version
+- npm
+- A Google Gemini API key for AI features
 
 ### Installation
 
 ```bash
-# Clone the repository
 git clone https://github.com/Bilaaladenuga/ResumeForge-AI.git
 cd ResumeForge-AI/client
-
-# Install dependencies
 npm install
-
-# Start the development server
 npm run dev
 ```
 
-Open **http://localhost:3000** in your browser.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-### Setting Up AI Features
+On Windows PowerShell, if `npm` is blocked by script execution policy, use `npm.cmd`:
 
-1. Get a free API key from [Google AI Studio](https://aistudio.google.com/apikey)
-2. Click **"Configure AI"** in the app navbar
-3. Paste your API key and click **Save**
-4. Your key is stored locally in your browser — never sent to any third-party server
-
----
-
-## 📁 Project Structure
-
-```
-client/
-├── src/
-│   ├── components/
-│   │   ├── LandingPage.jsx       # Hero page with feature cards
-│   │   ├── TemplateSelector.jsx  # Industry template picker
-│   │   ├── ResumeBuilder.jsx     # Main builder orchestrator
-│   │   ├── ResumeForm.jsx        # Multi-section form
-│   │   ├── ResumePreview.jsx     # Dynamic template renderer
-│   │   ├── AIPanel.jsx           # AI features panel
-│   │   └── SettingsModal.jsx     # API key configuration
-│   ├── templates/
-│   │   ├── index.js              # Template registry
-│   │   ├── TechTemplate.jsx      # Tech/IT layout
-│   │   ├── FinanceTemplate.jsx   # Finance layout
-│   │   ├── HealthcareTemplate.jsx# Healthcare layout
-│   │   ├── CreativeTemplate.jsx  # Creative layout
-│   │   └── GeneralTemplate.jsx   # General/ATS layout
-│   ├── services/
-│   │   └── ai.js                 # Gemini API integration
-│   ├── styles/
-│   │   └── templates.css         # Template-specific styles
-│   ├── index.css                 # Global design system
-│   ├── App.jsx                   # Router & routes
-│   └── main.jsx                  # Entry point
-├── index.html
-├── package.json
-└── vite.config.js
+```powershell
+npm.cmd install
+npm.cmd run dev
 ```
 
----
+## AI Setup
 
-## 👨‍💻 Author
+1. Get a Gemini API key from [Google AI Studio](https://aistudio.google.com/apikey).
+2. Start the app and open the resume builder.
+3. Click `Configure AI` or `Settings`.
+4. Paste the API key and save it.
 
-**Bilaal Adenuga**
+The API key is stored in the browser's local storage and is used directly by the client when calling Gemini.
 
----
+## Scripts
 
-## 📄 License
+Run these from the `client` directory.
 
-This project is open source and available under the [MIT License](LICENSE).
+```bash
+npm run dev
+npm run build
+npm run start
+npm run lint
+```
+
+- `dev` starts the Next.js development server.
+- `build` creates a production build.
+- `start` serves the production build after `npm run build`.
+- `lint` runs ESLint.
+
+## Project Structure
+
+```text
+ResumeForge-AI/
+  README.md
+  screenshots/
+  client/
+    src/
+      app/
+        page.jsx
+        templates/page.jsx
+        builder/[templateId]/page.jsx
+        layout.jsx
+        globals.css
+      components/
+        LandingPage.jsx
+        TemplateSelector.jsx
+        ResumeBuilder.jsx
+        ResumeForm.jsx
+        ResumePreview.jsx
+        AIPanel.jsx
+        SettingsModal.jsx
+      services/
+        ai.js
+      styles/
+        templates.css
+      templates/
+        TechTemplate.jsx
+        FinanceTemplate.jsx
+        HealthcareTemplate.jsx
+        CreativeTemplate.jsx
+        GeneralTemplate.jsx
+        index.js
+    public/
+    package.json
+    next.config.mjs
+```
+
+## Migration Notes
+
+The active app is now `client/`, running on Next.js. The old Vite entry files were removed from the tracked client app and replaced with App Router pages.
+
+`client-old/` may exist locally as a backup from the migration, but it is not part of the active application.
+
+## Deployment
+
+The app can be deployed as a standard Next.js project. For Vercel:
+
+1. Import the GitHub repository.
+2. Set the project root to `client`.
+3. Use the default Next.js build settings.
+4. Deploy.
+
+Because the Gemini key is entered by the user in the browser, no server environment variable is required for the current AI flow.
+
+## Author
+
+Bilaal Adenuga
