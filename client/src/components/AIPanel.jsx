@@ -4,6 +4,7 @@ import { generateSummary, tailorSummary, powerUpBullet, generateSkills, checkApi
 
 const AIPanel = ({ formData, setFormData, industry, onOpenSettings }) => {
     const [loading, setLoading] = useState({});
+    const [error, setError] = useState('');
     const [jobDescription, setJobDescription] = useState('');
     const [bulletInput, setBulletInput] = useState('');
     const [bulletResult, setBulletResult] = useState('');
@@ -13,8 +14,28 @@ const AIPanel = ({ formData, setFormData, industry, onOpenSettings }) => {
 
     const hasApiKey = checkApiKey();
 
+    const getAIErrorMessage = (err) => {
+        const message = err?.message || '';
+
+        if (message.includes('429') || message.toLowerCase().includes('quota')) {
+            return 'Gemini could not generate this because the API key has reached its quota or has no free-tier quota available for this model. Check your Google AI Studio quota/billing or try again later.';
+        }
+
+        if (message.toLowerCase().includes('api key') || message.includes('403') || message.includes('401')) {
+            return 'Gemini could not generate this. Please check that your API key is valid and has access to the Gemini API.';
+        }
+
+        return 'AI generation failed. Please try again in a moment.';
+    };
+
+    const handleAIError = (label, err) => {
+        console.error(`${label} failed:`, err);
+        setError(getAIErrorMessage(err));
+    };
+
     const handleGenerateSummary = async () => {
         if (!hasApiKey) { onOpenSettings(); return; }
+        setError('');
         setLoading(prev => ({ ...prev, summary: true }));
         try {
             const result = await generateSummary({
@@ -26,7 +47,7 @@ const AIPanel = ({ formData, setFormData, industry, onOpenSettings }) => {
             });
             setFormData(prev => ({ ...prev, summary: result }));
         } catch (err) {
-            console.error('Summary generation failed:', err);
+            handleAIError('Summary generation', err);
         } finally {
             setLoading(prev => ({ ...prev, summary: false }));
         }
@@ -34,6 +55,7 @@ const AIPanel = ({ formData, setFormData, industry, onOpenSettings }) => {
 
     const handleTailor = async () => {
         if (!hasApiKey || !jobDescription.trim()) return;
+        setError('');
         setLoading(prev => ({ ...prev, tailor: true }));
         try {
             const result = await tailorSummary({
@@ -42,7 +64,7 @@ const AIPanel = ({ formData, setFormData, industry, onOpenSettings }) => {
             });
             setFormData(prev => ({ ...prev, summary: result }));
         } catch (err) {
-            console.error('Tailoring failed:', err);
+            handleAIError('Tailoring', err);
         } finally {
             setLoading(prev => ({ ...prev, tailor: false }));
         }
@@ -50,6 +72,7 @@ const AIPanel = ({ formData, setFormData, industry, onOpenSettings }) => {
 
     const handlePowerUp = async () => {
         if (!hasApiKey || !bulletInput.trim()) return;
+        setError('');
         setLoading(prev => ({ ...prev, powerup: true }));
         try {
             const result = await powerUpBullet({
@@ -59,7 +82,7 @@ const AIPanel = ({ formData, setFormData, industry, onOpenSettings }) => {
             });
             setBulletResult(result);
         } catch (err) {
-            console.error('Power-up failed:', err);
+            handleAIError('Power-up', err);
         } finally {
             setLoading(prev => ({ ...prev, powerup: false }));
         }
@@ -67,6 +90,7 @@ const AIPanel = ({ formData, setFormData, industry, onOpenSettings }) => {
 
     const handleEnhanceSkills = async () => {
         if (!hasApiKey) { onOpenSettings(); return; }
+        setError('');
         setLoading(prev => ({ ...prev, skills: true }));
         try {
             const result = await generateSkills({
@@ -76,7 +100,7 @@ const AIPanel = ({ formData, setFormData, industry, onOpenSettings }) => {
             });
             setFormData(prev => ({ ...prev, skillsRaw: result }));
         } catch (err) {
-            console.error('Skills enhancement failed:', err);
+            handleAIError('Skills enhancement', err);
         } finally {
             setLoading(prev => ({ ...prev, skills: false }));
         }
@@ -84,6 +108,7 @@ const AIPanel = ({ formData, setFormData, industry, onOpenSettings }) => {
 
     const handleGenerateCoverLetter = async () => {
         if (!hasApiKey || !jobDescription.trim()) return;
+        setError('');
         setLoading(prev => ({ ...prev, coverletter: true }));
         try {
             const result = await generateCoverLetter({
@@ -96,7 +121,7 @@ const AIPanel = ({ formData, setFormData, industry, onOpenSettings }) => {
             });
             setCoverLetter(result);
         } catch (err) {
-            console.error('Cover letter generation failed:', err);
+            handleAIError('Cover letter generation', err);
         } finally {
             setLoading(prev => ({ ...prev, coverletter: false }));
         }
@@ -104,6 +129,7 @@ const AIPanel = ({ formData, setFormData, industry, onOpenSettings }) => {
 
     const handleATSCheck = async () => {
         if (!hasApiKey || !jobDescription.trim()) return;
+        setError('');
         setLoading(prev => ({ ...prev, ats: true }));
         try {
             const result = await analyzeATSCompatibility({
@@ -123,7 +149,7 @@ const AIPanel = ({ formData, setFormData, industry, onOpenSettings }) => {
                 tips: tips.length ? tips : ["Focus on core keywords", "Quantify achievements", "Align role titles"]
             });
         } catch (err) {
-            console.error('ATS check failed:', err);
+            handleAIError('ATS check', err);
         } finally {
             setLoading(prev => ({ ...prev, ats: false }));
         }
@@ -146,6 +172,21 @@ const AIPanel = ({ formData, setFormData, industry, onOpenSettings }) => {
                     </button>
                 )}
             </div>
+
+            {error && (
+                <div style={{
+                    background: 'rgba(239, 68, 68, 0.08)',
+                    border: '1px solid rgba(239, 68, 68, 0.25)',
+                    borderRadius: 'var(--radius-sm)',
+                    color: 'var(--text)',
+                    fontSize: '0.75rem',
+                    lineHeight: 1.5,
+                    marginBottom: '1rem',
+                    padding: '0.75rem'
+                }}>
+                    {error}
+                </div>
+            )}
 
             {/* Summary Generator */}
             <div className="ai-feature">
