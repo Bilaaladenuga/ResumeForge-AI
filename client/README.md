@@ -42,10 +42,14 @@ src/app/          Next.js App Router pages and global layout
 src/components/   Builder, landing page, selector, forms, and AI panel
 src/templates/    Resume template React components
 src/styles/       Template-specific CSS
-src/services/     Gemini AI integration
+src/services/     AI provider routing and fallback writing
 public/           Static assets
 ```
 
 ## AI Features
 
-The app uses `@google/generative-ai`. Users configure their own Gemini API key from the settings modal. The key is saved in browser local storage and is not stored by a backend service.
+The app supports Gemini, OpenAI-compatible APIs, OpenRouter, and Ollama local. Gemini remains the default provider.
+
+Users configure provider details from the settings modal. Keys and provider settings are saved in browser local storage and are not stored by a backend service.
+
+If a provider fails, summaries and bullet improvements can fall back to deterministic resume-writing templates so the user still gets a usable result.

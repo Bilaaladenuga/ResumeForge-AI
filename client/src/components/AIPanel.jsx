@@ -1,6 +1,17 @@
 import React, { useState } from 'react';
 import { Cpu, Sparkles, Target, Wand2, Wrench, FileText, Activity, Copy, Check } from 'lucide-react';
-import { generateSummary, tailorSummary, powerUpBullet, generateSkills, checkApiKey, generateCoverLetter, analyzeATSCompatibility } from '../services/ai';
+import {
+    generateSummary,
+    tailorSummary,
+    powerUpBullet,
+    generateSkills,
+    checkApiKey,
+    generateCoverLetter,
+    analyzeATSCompatibility,
+    generateFallbackSummary,
+    generateFallbackBullet,
+    getProviderConfig
+} from '../services/ai';
 
 const AIPanel = ({ formData, setFormData, industry, onOpenSettings }) => {
     const [loading, setLoading] = useState({});
@@ -13,19 +24,20 @@ const AIPanel = ({ formData, setFormData, industry, onOpenSettings }) => {
     const [copied, setCopied] = useState(false);
 
     const hasApiKey = checkApiKey();
+    const providerConfig = getProviderConfig();
 
     const getAIErrorMessage = (err) => {
         const message = err?.message || '';
 
         if (message.includes('429') || message.toLowerCase().includes('quota')) {
-            return 'Gemini could not generate this because the API key has reached its quota or has no free-tier quota available for this model. Check your Google AI Studio quota/billing or try again later.';
+            return `${providerConfig.label} could not generate this because the provider quota or rate limit was reached. ResumeForge used a built-in fallback where available.`;
         }
 
         if (message.toLowerCase().includes('api key') || message.includes('403') || message.includes('401')) {
-            return 'Gemini could not generate this. Please check that your API key is valid and has access to the Gemini API.';
+            return `${providerConfig.label} could not generate this. Please check that the provider settings are valid. ResumeForge used a built-in fallback where available.`;
         }
 
-        return 'AI generation failed. Please try again in a moment.';
+        return 'AI generation failed. ResumeForge used a built-in fallback where available.';
     };
 
     const handleAIError = (label, err) => {
@@ -48,6 +60,16 @@ const AIPanel = ({ formData, setFormData, industry, onOpenSettings }) => {
             setFormData(prev => ({ ...prev, summary: result }));
         } catch (err) {
             handleAIError('Summary generation', err);
+            setFormData(prev => ({
+                ...prev,
+                summary: generateFallbackSummary({
+                    name: `${prev.firstName || ''} ${prev.lastName || ''}`.trim(),
+                    role: prev.designation || '',
+                    experience: (prev.experiences || []).map(e => `${e.title} at ${e.company}: ${e.description}`).join('. '),
+                    skills: prev.skillsRaw || '',
+                    industry
+                })
+            }));
         } finally {
             setLoading(prev => ({ ...prev, summary: false }));
         }
@@ -83,6 +105,11 @@ const AIPanel = ({ formData, setFormData, industry, onOpenSettings }) => {
             setBulletResult(result);
         } catch (err) {
             handleAIError('Power-up', err);
+            setBulletResult(generateFallbackBullet({
+                bulletText: bulletInput,
+                role: formData.designation || '',
+                industry
+            }));
         } finally {
             setLoading(prev => ({ ...prev, powerup: false }));
         }
@@ -166,8 +193,11 @@ const AIPanel = ({ formData, setFormData, industry, onOpenSettings }) => {
             <div className="ai-panel-header">
                 <Cpu size={20} color="var(--accent)" />
                 <h3 className="gradient-text-accent">AI Assistant</h3>
+                <span style={{ color: 'var(--text-dim)', fontSize: '0.65rem', marginLeft: 'auto', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+                    {providerConfig.label}
+                </span>
                 {!hasApiKey && (
-                    <button className="btn btn-sm btn-accent" onClick={onOpenSettings} style={{ marginLeft: 'auto' }}>
+                    <button className="btn btn-sm btn-accent" onClick={onOpenSettings}>
                         Configure
                     </button>
                 )}

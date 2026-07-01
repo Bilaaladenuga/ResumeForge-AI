@@ -13,6 +13,8 @@ The project was migrated from Vite to Next.js and now uses the Next App Router f
 ## Features
 
 - AI resume summary generation with Google Gemini
+- Configurable AI providers: Gemini, OpenAI-compatible APIs, OpenRouter, and Ollama local
+- Built-in fallback writing for summaries and bullet improvements when an AI provider fails
 - Resume tailoring from a pasted job description
 - Bullet point improvement for stronger achievement statements
 - AI skills enhancement
@@ -81,12 +83,18 @@ npm.cmd run dev
 
 ## AI Setup
 
-1. Get a Gemini API key from [Google AI Studio](https://aistudio.google.com/apikey).
-2. Start the app and open the resume builder.
-3. Click `Configure AI` or `Settings`.
-4. Paste the API key and save it.
+1. Choose an AI provider in Settings.
+2. Gemini is the default provider. Get a Gemini API key from [Google AI Studio](https://aistudio.google.com/apikey).
+3. You can also configure an OpenAI-compatible endpoint, OpenRouter model, or Ollama local model.
+4. Start the app and open the resume builder.
+5. Click `Configure AI` or `Settings`.
+6. Paste the provider details and save them.
 
-The API key is stored in the browser's local storage and is used directly by the client when calling Gemini.
+Ollama local is labeled experimental because it requires a capable device and a local Ollama server.
+
+If the selected provider fails because of quota, rate limits, or key issues, ResumeForge falls back to built-in resume-writing templates for summaries and bullet improvements.
+
+Provider credentials are stored in the browser's local storage and are used directly by the client.
 
 ## Scripts
 
