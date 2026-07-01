@@ -2,6 +2,8 @@
 
 ResumeForge AI is an AI-powered resume builder for creating polished, ATS-friendly resumes with industry-specific templates and Google Gemini content assistance.
 
+![ResumeForge AI landing page](screenshots/landing-page.png)
+
 The project was migrated from Vite to Next.js and now uses the Next App Router for the main pages:
 
 - `/` - landing page
@@ -21,6 +23,22 @@ The project was migrated from Vite to Next.js and now uses the Next App Router f
 - Profile photo upload
 - Print/PDF export through the browser print flow
 - Responsive dark glass-style interface
+
+## Interface Preview
+
+### Template Selector
+
+![ResumeForge template selector](screenshots/template-selector.png)
+
+### Resume Builder
+
+![ResumeForge tech resume builder](screenshots/builder-tech.png)
+
+### Template Examples
+
+![ResumeForge healthcare resume template](screenshots/builder-healthcare.png)
+
+![ResumeForge creative resume template](screenshots/builder-creative.png)
 
 ## Tech Stack
 
