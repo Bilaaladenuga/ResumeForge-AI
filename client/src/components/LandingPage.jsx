@@ -1,5 +1,6 @@
+"use client";
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import {
     Sparkles, Zap, FileText, ArrowRight, Layout, Cpu,
@@ -8,7 +9,7 @@ import {
 } from 'lucide-react';
 
 const LandingPage = () => {
-    const navigate = useNavigate();
+    const router = useRouter();
 
     const containerVariants = {
         hidden: { opacity: 0 },
@@ -65,7 +66,7 @@ const LandingPage = () => {
                     </h1>
 
                     <p className="landing-subtitle">
-                        Standard resumes are ignored. Our AI doesn't just "write" your resume —
+                        Standard resumes are ignored. Our AI does not just write your resume -
                         it builds a <strong>competitive advantage</strong>. Optimized for ATS,
                         tailored for humans, and powered by Gemini.
                     </p>
@@ -73,7 +74,7 @@ const LandingPage = () => {
                     <div className="landing-cta">
                         <button
                             className="btn btn-primary btn-lg"
-                            onClick={() => navigate('/templates')}
+                            onClick={() => router.push('/templates')}
                             id="cta-create-resume"
                         >
                             Create My Resume <ArrowRight size={20} />
@@ -219,7 +220,7 @@ const LandingPage = () => {
                         <motion.div className="glass-card ai-feature" variants={itemVariants}>
                             <div className="ai-feature-icon"><Sparkles /></div>
                             <h4>Skills Enhancer</h4>
-                            <p>Discover hidden skills you didn't know you had and present them professionally.</p>
+                            <p>Discover hidden skills you did not know you had and present them professionally.</p>
                         </motion.div>
                         <motion.div className="glass-card ai-feature" variants={itemVariants}>
                             <div className="ai-feature-icon"><ShieldCheck /></div>
@@ -241,7 +242,7 @@ const LandingPage = () => {
                     <div className="text-center max-w-800 mx-auto">
                         <h2 className="section-title">Use the best resume maker as your guide!</h2>
                         <p className="section-text text-xl">
-                            Getting that dream job can seem like an impossible task. We're here to change that.
+                            Getting that dream job can seem like an impossible task. We are here to change that.
                             Give yourself a real advantage with the best online resume maker:
                             <strong> created by experts, improved by data, trusted by millions</strong> of professionals.
                         </p>
@@ -296,3 +297,4 @@ const LandingPage = () => {
 };
 
 export default LandingPage;
+

@@ -2,7 +2,7 @@
    ResumeForge AI — Design System
    ============================================ */
 
-@import url('./styles/templates.css');
+@import url('../styles/templates.css');
 
 /* ---------- CSS Custom Properties ---------- */
 :root {

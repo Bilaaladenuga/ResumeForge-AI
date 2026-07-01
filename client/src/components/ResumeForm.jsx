@@ -1,7 +1,7 @@
 import React from 'react';
 import {
     User, Briefcase, GraduationCap, FolderKanban, Award, Wrench,
-    ChevronDown, ChevronUp, Plus, X, Image
+    ChevronDown, ChevronUp, Plus, X, Image as ImageIcon
 } from 'lucide-react';
 
 const sectionConfig = [
@@ -127,7 +127,7 @@ const ResumeForm = ({ formData, setFormData, openSections, setOpenSections }) =>
                             className="form-input"
                             style={{ paddingLeft: '2.5rem' }}
                         />
-                        <Image size={16} style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-dim)' }} />
+                        <ImageIcon size={16} style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-dim)' }} />
                     </div>
                 </div>
             </div>

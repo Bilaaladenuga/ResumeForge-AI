@@ -1,5 +1,6 @@
+"use client";
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { Sparkles, Code, DollarSign, Heart, Palette, FileText, ArrowLeft } from 'lucide-react';
 
@@ -52,10 +53,10 @@ const templates = [
 ];
 
 const TemplateSelector = () => {
-    const navigate = useNavigate();
+    const router = useRouter();
 
     const handleSelect = (templateId) => {
-        navigate(`/builder/${templateId}`);
+        router.push(`/builder/${templateId}`);
     };
 
     return (
@@ -63,11 +64,11 @@ const TemplateSelector = () => {
             <nav className="navbar">
                 <div className="container">
                     <div className="navbar-inner">
-                        <div className="navbar-brand" onClick={() => navigate('/')}>
+                        <div className="navbar-brand" onClick={() => router.push('/')}>
                             <Sparkles color="var(--secondary)" size={28} />
                             <span className="navbar-brand-text gradient-text">ResumeForge</span>
                         </div>
-                        <button className="btn btn-ghost" onClick={() => navigate('/')}>
+                        <button className="btn btn-ghost" onClick={() => router.push('/')}>
                             <ArrowLeft size={16} /> Back
                         </button>
                     </div>

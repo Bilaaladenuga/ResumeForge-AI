@@ -87,7 +87,7 @@ const SettingsModal = ({ isOpen, onClose }) => {
                 </div>
 
                 <p style={{ color: 'var(--text-dim)', fontSize: '0.7rem', marginTop: '1rem', lineHeight: 1.5 }}>
-                    Your API key is stored locally in your browser and never sent to any server except Google's API.
+                    Your API key is stored locally in your browser and never sent to any server except Google&apos;s API.
                 </p>
             </motion.div>
         </div>
@@ -95,3 +95,4 @@ const SettingsModal = ({ isOpen, onClose }) => {
 };
 
 export default SettingsModal;
+

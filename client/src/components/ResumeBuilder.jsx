@@ -1,5 +1,6 @@
+"use client";
 import React, { useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useRouter } from 'next/navigation';
 import { Sparkles, Settings, Download, ArrowLeft, ShieldCheck, AlertCircle } from 'lucide-react';
 import ResumeForm from './ResumeForm';
 import ResumePreview from './ResumePreview';
@@ -10,7 +11,7 @@ import { checkApiKey } from '../services/ai';
 
 const ResumeBuilder = () => {
     const { templateId } = useParams();
-    const navigate = useNavigate();
+    const router = useRouter();
     const template = getTemplate(templateId);
 
     const [showSettings, setShowSettings] = useState(false);
@@ -51,7 +52,7 @@ const ResumeBuilder = () => {
             <nav className="navbar">
                 <div className="container">
                     <div className="navbar-inner">
-                        <div className="navbar-brand" onClick={() => navigate('/')}>
+                        <div className="navbar-brand" onClick={() => router.push('/')}>
                             <Sparkles color="var(--secondary)" size={24} />
                             <span className="navbar-brand-text gradient-text">ResumeForge</span>
                         </div>
@@ -76,7 +77,7 @@ const ResumeBuilder = () => {
                                 <Settings size={14} /> {hasApiKey ? 'Settings' : 'Configure AI'}
                             </button>
 
-                            <button className="btn btn-ghost btn-sm" onClick={() => navigate('/templates')}>
+                            <button className="btn btn-ghost btn-sm" onClick={() => router.push('/templates')}>
                                 <ArrowLeft size={14} /> Templates
                             </button>
 
