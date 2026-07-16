@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { X, Key, ExternalLink } from 'lucide-react';
+import { X, Key, ExternalLink, Sparkles, Download, CheckCircle } from 'lucide-react';
 import { AI_PROVIDERS } from '../services/ai';
 
 interface SettingsModalProps {
@@ -106,7 +106,35 @@ const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
         if (provider === 'ollama') {
             return (
                 <>
-                    <p style={{ marginBottom: '1rem' }}>Local AI: experimental / requires capable device.</p>
+                    <div style={{
+                        background: 'rgba(16, 185, 129, 0.06)',
+                        border: '1px solid rgba(16, 185, 129, 0.15)',
+                        borderRadius: 'var(--radius-md)',
+                        padding: '1rem',
+                        marginBottom: '1rem'
+                    }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+                            <CheckCircle size={16} color="var(--success)" />
+                            <strong style={{ fontSize: '0.85rem', color: 'var(--success)' }}>100% Free — Runs Locally</strong>
+                        </div>
+                        <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', lineHeight: 1.5, margin: 0 }}>
+                            Ollama runs AI models directly on your machine. No API keys, no credit cards, no limits.
+                        </p>
+                        <div style={{
+                            marginTop: '10px',
+                            background: 'rgba(0,0,0,0.2)',
+                            borderRadius: 'var(--radius-sm)',
+                            padding: '0.75rem',
+                            fontSize: '0.72rem',
+                            fontFamily: 'monospace',
+                            color: 'var(--text-muted)',
+                            lineHeight: 1.6
+                        }}>
+                            <div>1. Download & install: <a href="https://ollama.com/download" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent)' }}>ollama.com/download</a></div>
+                            <div>2. Run a model: <span style={{ color: 'var(--text)' }}>ollama run llama3.2</span></div>
+                            <div>3. Set URL to: <span style={{ color: 'var(--text)' }}>http://localhost:11434</span></div>
+                        </div>
+                    </div>
                     <div className="form-group" style={{ marginBottom: '1rem' }}>
                         <label className="form-label">Ollama Base URL</label>
                         <input value={ollamaBaseUrl} onChange={(e) => setOllamaBaseUrl(e.target.value)} placeholder="http://localhost:11434" className="form-input" />
@@ -129,8 +157,8 @@ const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
                     <label className="form-label">Model</label>
                     <input value={geminiModel} onChange={(e) => setGeminiModel(e.target.value)} placeholder="gemini-2.0-flash" className="form-input" />
                 </div>
-                <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--accent)', fontSize: '0.75rem', marginBottom: '1rem', fontWeight: '600' }}>
-                    Get a Gemini API key from Google AI Studio <ExternalLink size={12} />
+                <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener noreferrer" className="btn btn-sm btn-accent" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', textTransform: 'none', letterSpacing: 'normal', marginBottom: '1rem' }}>
+                    <Download size={14} /> Get Your Free Gemini API Key
                 </a>
             </>
         );
@@ -145,6 +173,47 @@ const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
                             <Key size={20} /> AI Configuration
                         </h2>
                         <p style={{ marginBottom: 0 }}>Choose how ResumeForge should power AI writing tools.</p>
+
+                        {!geminiKey && provider === 'gemini' && (
+                            <div style={{
+                                background: 'linear-gradient(135deg, rgba(245, 158, 11, 0.08), rgba(255, 255, 255, 0.02))',
+                                border: '1px solid rgba(245, 158, 11, 0.2)',
+                                borderRadius: 'var(--radius-md)',
+                                padding: '1rem',
+                                marginTop: '1rem',
+                                marginBottom: '1rem'
+                            }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+                                    <Sparkles size={16} color="var(--secondary)" />
+                                    <strong style={{ fontSize: '0.85rem', color: 'var(--secondary)' }}>Free Tier Available!</strong>
+                                </div>
+                                <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', lineHeight: 1.5, margin: 0 }}>
+                                    Google Gemini has a <strong style={{ color: 'var(--text)' }}>generous free tier</strong> —
+                                    60 requests per minute on Gemini 2.0 Flash, completely free.
+                                    No credit card required.
+                                </p>
+                                <a
+                                    href="https://aistudio.google.com/apikey"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="btn btn-sm btn-accent"
+                                    style={{
+                                        marginTop: '10px',
+                                        display: 'inline-flex',
+                                        alignItems: 'center',
+                                        gap: '6px',
+                                        textTransform: 'none',
+                                        letterSpacing: 'normal',
+                                        fontWeight: 600
+                                    }}
+                                >
+                                    <Download size={14} /> Get Your Free Gemini API Key
+                                </a>
+                                <p style={{ fontSize: '0.65rem', color: 'var(--text-dim)', marginTop: '6px', marginBottom: 0 }}>
+                                    Opens Google AI Studio — sign in with Google & copy your key.
+                                </p>
+                            </div>
+                        )}
                     </div>
                     <button onClick={onClose} className="btn btn-ghost btn-icon" style={{ flexShrink: 0 }}>
                         <X size={18} />

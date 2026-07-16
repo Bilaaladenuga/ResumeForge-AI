@@ -136,6 +136,14 @@ export interface ATSParams {
     jobDescription: string;
 }
 
+export type WritingStyle = 'professional' | 'casual' | 'academic';
+
+export const WRITING_STYLES: Record<WritingStyle, { label: string; description: string; icon: string }> = {
+    professional: { label: 'Professional', description: 'Formal corporate tone with industry-standard language', icon: '💼' },
+    casual: { label: 'Casual', description: 'Approachable and conversational while remaining polished', icon: '😊' },
+    academic: { label: 'Academic', description: 'Research-oriented with scholarly language and formal structure', icon: '🎓' }
+};
+
 export interface StoredDraft {
     formData: FormData;
     savedAt: string;

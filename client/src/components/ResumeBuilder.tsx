@@ -1,12 +1,14 @@
 'use client';
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { Sparkles, Settings, Download, ArrowLeft, ShieldCheck, AlertCircle, Save, Upload, Trash2, Linkedin } from 'lucide-react';
+import { Sparkles, Settings, Download, ArrowLeft, ShieldCheck, AlertCircle, Save, Upload, Trash2, Linkedin, TrendingUp } from 'lucide-react';
 import ResumeForm from './ResumeForm';
 import ResumePreview from './ResumePreview';
 import AIPanel from './AIPanel';
 import SettingsModal from './SettingsModal';
 import LinkedInImportModal from './LinkedInImportModal';
+import PDFExportButton from './PDFExport';
+import ResumeScoreModal from './ResumeScoreModal';
 import { getTemplate } from '../templates';
 import { checkApiKey } from '../services/ai';
 import { saveDraft, loadDraft, clearDraft, exportResumeAsJSON, importResumeFromJSON } from '../services/storage';
@@ -55,6 +57,7 @@ const ResumeBuilder = () => {
     const [savedStatus, setSavedStatus] = useState<string>(''); // '', 'saving', 'saved', 'error'
     const [importError, setImportError] = useState('');
     const [showLinkedInModal, setShowLinkedInModal] = useState(false);
+    const [showScoreModal, setShowScoreModal] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -123,10 +126,6 @@ const ResumeBuilder = () => {
             }));
         }
     }, [formData, touched]);
-
-    const handleExport = () => {
-        window.print();
-    };
 
     const handleExportJSON = () => {
         exportResumeAsJSON(formData);
@@ -278,6 +277,15 @@ const ResumeBuilder = () => {
                                 <Trash2 size={14} />
                             </button>
 
+                            {/* Score Resume */}
+                            <button
+                                className="btn btn-sm btn-secondary"
+                                onClick={() => setShowScoreModal(true)}
+                                title="Score your resume quality"
+                            >
+                                <TrendingUp size={14} /> Score
+                            </button>
+
                             {/* Validate */}
                             <button
                                 className={`btn btn-sm ${hasErrors(errors) && Object.keys(touched).length > 0 ? 'btn-danger' : 'btn-secondary'}`}
@@ -287,9 +295,7 @@ const ResumeBuilder = () => {
                                 <ShieldCheck size={14} /> Validate
                             </button>
 
-                            <button className="btn btn-primary btn-sm no-print" onClick={handleExport}>
-                                <Download size={14} /> Export PDF
-                            </button>
+                            <PDFExportButton formData={formData} templateName={template.name} />
                         </div>
                     </div>
                 </div>
@@ -361,6 +367,13 @@ const ResumeBuilder = () => {
                 isOpen={showLinkedInModal}
                 onClose={() => setShowLinkedInModal(false)}
                 onImport={handleLinkedInImport}
+            />
+
+            {/* Resume Score Modal */}
+            <ResumeScoreModal
+                isOpen={showScoreModal}
+                onClose={() => setShowScoreModal(false)}
+                formData={formData}
             />
         </div>
     );
