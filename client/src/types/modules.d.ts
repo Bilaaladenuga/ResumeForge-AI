@@ -53,10 +53,14 @@ declare module 'lucide-react' {
     export const Copy: Icon;
     export const Scale: Icon;
     export const BookOpen: Icon;
+    export const Pen: Icon;
+    export const MessageSquare: Icon;
     export const Linkedin: Icon;
     export const Loader2: Icon;
     export const Eye: Icon;
     export const EyeOff: Icon;
     export const AlertTriangle: Icon;
     export const TrendingUp: Icon;
+    export const Files: Icon;
+    export const Edit3: Icon;
 }

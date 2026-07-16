@@ -144,6 +144,19 @@ export const WRITING_STYLES: Record<WritingStyle, { label: string; description: 
     academic: { label: 'Academic', description: 'Research-oriented with scholarly language and formal structure', icon: '🎓' }
 };
 
+export interface ResumeMeta {
+    id: string;
+    name: string;
+    templateId: string;
+    createdAt: string;
+    updatedAt: string;
+}
+
+export interface StoredResume {
+    meta: ResumeMeta;
+    formData: FormData;
+}
+
 export interface StoredDraft {
     formData: FormData;
     savedAt: string;

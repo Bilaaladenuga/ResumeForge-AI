@@ -1,8 +1,13 @@
-import { FormData, StoredDraft, ExportedResume } from '../types';
+import { FormData, StoredDraft, StoredResume, ResumeMeta, ExportedResume } from '../types';
 
 const STORAGE_PREFIX = 'resumeforge_';
 const DRAFT_KEY = (templateId: string): string => `${STORAGE_PREFIX}draft_${templateId}`;
 const LAST_TEMPLATE_KEY = `${STORAGE_PREFIX}last_template`;
+const RESUME_INDEX_KEY = `${STORAGE_PREFIX}resume_index`;
+const RESUME_KEY = (id: string): string => `${STORAGE_PREFIX}resume_${id}`;
+const ACTIVE_RESUME_KEY = `${STORAGE_PREFIX}active_resume`;
+
+// ─── Legacy single-draft functions (keep for backward compat) ───
 
 export const saveDraft = (templateId: string, formData: FormData): boolean => {
     try {
@@ -154,3 +159,179 @@ export const subscribeToStorageChanges = (callback: (key: string, value: string 
     window.addEventListener('storage', handler);
     return () => window.removeEventListener('storage', handler);
 };
+
+// ─── Multi-resume functions ───
+
+const DEFAULT_FORM_DATA: FormData = {
+    firstName: '',
+    lastName: '',
+    designation: '',
+    email: '',
+    phone: '',
+    address: '',
+    summary: '',
+    image: null,
+    skillsRaw: '',
+    experiences: [],
+    educations: [],
+    projects: [],
+    achievements: []
+};
+
+function generateId(): string {
+    return Date.now().toString(36) + Math.random().toString(36).substring(2, 8);
+}
+
+export function getResumeIndex(): ResumeMeta[] {
+    try {
+        const raw = localStorage.getItem(RESUME_INDEX_KEY);
+        return raw ? JSON.parse(raw) : [];
+    } catch {
+        return [];
+    }
+}
+
+function saveResumeIndex(index: ResumeMeta[]): void {
+    try {
+        localStorage.setItem(RESUME_INDEX_KEY, JSON.stringify(index));
+    } catch (err) {
+        console.error('Failed to save resume index:', err);
+    }
+}
+
+function updateResumeInIndex(id: string, updates: Partial<ResumeMeta>): void {
+    const index = getResumeIndex();
+    const idx = index.findIndex(r => r.id === id);
+    if (idx !== -1) {
+        index[idx] = { ...index[idx], ...updates, updatedAt: new Date().toISOString() };
+        saveResumeIndex(index);
+    }
+}
+
+export function getResumeById(id: string): StoredResume | null {
+    try {
+        const raw = localStorage.getItem(RESUME_KEY(id));
+        return raw ? JSON.parse(raw) : null;
+    } catch {
+        return null;
+    }
+}
+
+export function saveResume(meta: ResumeMeta, formData: FormData): boolean {
+    try {
+        const key = RESUME_KEY(meta.id);
+        const stored: StoredResume = { meta, formData };
+        localStorage.setItem(key, JSON.stringify(stored));
+        // Update index
+        const index = getResumeIndex();
+        const existingIdx = index.findIndex(r => r.id === meta.id);
+        const updatedMeta = { ...meta, updatedAt: new Date().toISOString() };
+        if (existingIdx !== -1) {
+            index[existingIdx] = updatedMeta;
+        } else {
+            index.push(updatedMeta);
+        }
+        saveResumeIndex(index);
+        return true;
+    } catch (err) {
+        console.error('Failed to save resume:', err);
+        return false;
+    }
+}
+
+export function createResume(name: string, templateId: string): StoredResume {
+    const now = new Date().toISOString();
+    const meta: ResumeMeta = {
+        id: generateId(),
+        name,
+        templateId,
+        createdAt: now,
+        updatedAt: now
+    };
+    const resume: StoredResume = {
+        meta,
+        formData: { ...DEFAULT_FORM_DATA }
+    };
+    // Save to storage
+    localStorage.setItem(RESUME_KEY(meta.id), JSON.stringify(resume));
+    const index = getResumeIndex();
+    index.push(meta);
+    saveResumeIndex(index);
+    return resume;
+}
+
+export function deleteResume(id: string): void {
+    try {
+        localStorage.removeItem(RESUME_KEY(id));
+        const index = getResumeIndex().filter(r => r.id !== id);
+        saveResumeIndex(index);
+        // Clear active if deleted
+        if (getActiveResumeId() === id) {
+            localStorage.removeItem(ACTIVE_RESUME_KEY);
+        }
+    } catch (err) {
+        console.error('Failed to delete resume:', err);
+    }
+}
+
+export function duplicateResume(id: string): StoredResume | null {
+    const original = getResumeById(id);
+    if (!original) return null;
+    const now = new Date().toISOString();
+    const meta: ResumeMeta = {
+        id: generateId(),
+        name: `${original.meta.name} (Copy)`,
+        templateId: original.meta.templateId,
+        createdAt: now,
+        updatedAt: now
+    };
+    const resume: StoredResume = {
+        meta,
+        formData: JSON.parse(JSON.stringify(original.formData)) // Deep clone
+    };
+    localStorage.setItem(RESUME_KEY(meta.id), JSON.stringify(resume));
+    const index = getResumeIndex();
+    index.push(meta);
+    saveResumeIndex(index);
+    return resume;
+}
+
+export function renameResume(id: string, name: string): boolean {
+    try {
+        // Update in storage
+        const key = RESUME_KEY(id);
+        const raw = localStorage.getItem(key);
+        if (!raw) return false;
+        const resume: StoredResume = JSON.parse(raw);
+        resume.meta.name = name;
+        resume.meta.updatedAt = new Date().toISOString();
+        localStorage.setItem(key, JSON.stringify(resume));
+        // Update index
+        updateResumeInIndex(id, { name });
+        return true;
+    } catch {
+        return false;
+    }
+}
+
+export function getActiveResumeId(): string | null {
+    try {
+        return localStorage.getItem(ACTIVE_RESUME_KEY);
+    } catch {
+        return null;
+    }
+}
+
+export function setActiveResumeId(id: string | null): void {
+    try {
+        if (id) {
+            localStorage.setItem(ACTIVE_RESUME_KEY, id);
+        } else {
+            localStorage.removeItem(ACTIVE_RESUME_KEY);
+        }
+    } catch {
+        // Silently fail
+    }
+}
+
+

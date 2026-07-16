@@ -1,15 +1,17 @@
 'use client';
-import React from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import {
     Sparkles, Zap, FileText, ArrowRight, Layout, Cpu,
     CheckCircle, Search, BarChart, ShieldCheck, Globe,
-    ChevronRight, Award
+    ChevronRight, Award, Files
 } from 'lucide-react';
+import ResumeManager from './ResumeManager';
 
 const LandingPage = () => {
     const router = useRouter();
+    const [showResumeManager, setShowResumeManager] = useState(false);
 
     const containerVariants = {
         hidden: { opacity: 0 },
@@ -78,6 +80,13 @@ const LandingPage = () => {
                             id="cta-create-resume"
                         >
                             Create My Resume <ArrowRight size={20} />
+                        </button>
+                        <button
+                            className="btn btn-secondary btn-lg"
+                            onClick={() => setShowResumeManager(true)}
+                            style={{ marginLeft: '1rem' }}
+                        >
+                            <Files size={18} /> My Resumes
                         </button>
                     </div>
                 </motion.div>
@@ -292,6 +301,11 @@ const LandingPage = () => {
                     <p className="footer-copyright">&copy; 2026 ResumeForge AI. Built by Bilaal — All Rights Reserved.</p>
                 </div>
             </footer>
+            {/* Resume Manager Modal */}
+            <ResumeManager
+                isOpen={showResumeManager}
+                onClose={() => setShowResumeManager(false)}
+            />
         </div>
     );
 };
