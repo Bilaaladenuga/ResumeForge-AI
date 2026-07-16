@@ -1,18 +1,18 @@
 import React from 'react';
+import { FormData } from '../types';
 
-const formatDate = (dateStr) => {
+const formatDate = (dateStr: string): string => {
     if (!dateStr) return 'Present';
     const date = new Date(dateStr + '-01');
     return date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
 };
 
-const GeneralTemplate = ({ data }) => {
+const GeneralTemplate = ({ data }: { data: FormData }) => {
     const fullName = `${data.firstName || ''} ${data.lastName || ''}`.trim() || 'Your Name';
     const skills = (data.skillsRaw || '').split(',').map(s => s.trim()).filter(Boolean);
 
     return (
         <div className="preview-container template-general">
-            {/* Header */}
             <div className="general-header">
                 <div className="general-header-top">
                     {data.image && <img src={data.image} alt="Profile" className="general-avatar" />}
@@ -29,7 +29,6 @@ const GeneralTemplate = ({ data }) => {
             </div>
 
             <div className="general-body">
-                {/* Summary */}
                 {data.summary && (
                     <div className="general-section">
                         <h2 className="general-section-title">Professional Summary</h2>
@@ -37,7 +36,6 @@ const GeneralTemplate = ({ data }) => {
                     </div>
                 )}
 
-                {/* Experience */}
                 {data.experiences?.length > 0 && (
                     <div className="general-section">
                         <h2 className="general-section-title">Work Experience</h2>
@@ -62,7 +60,6 @@ const GeneralTemplate = ({ data }) => {
                     </div>
                 )}
 
-                {/* Education */}
                 {data.educations?.length > 0 && (
                     <div className="general-section">
                         <h2 className="general-section-title">Education</h2>
@@ -81,7 +78,6 @@ const GeneralTemplate = ({ data }) => {
                     </div>
                 )}
 
-                {/* Skills */}
                 {skills.length > 0 && (
                     <div className="general-section">
                         <h2 className="general-section-title">Skills</h2>
@@ -89,7 +85,6 @@ const GeneralTemplate = ({ data }) => {
                     </div>
                 )}
 
-                {/* Projects */}
                 {data.projects?.length > 0 && (
                     <div className="general-section">
                         <h2 className="general-section-title">Projects</h2>
@@ -102,7 +97,6 @@ const GeneralTemplate = ({ data }) => {
                     </div>
                 )}
 
-                {/* Achievements */}
                 {data.achievements?.length > 0 && (
                     <div className="general-section">
                         <h2 className="general-section-title">Achievements</h2>

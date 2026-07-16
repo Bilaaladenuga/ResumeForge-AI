@@ -1,18 +1,18 @@
 import React from 'react';
+import { FormData } from '../types';
 
-const formatDate = (dateStr) => {
+const formatDate = (dateStr: string): string => {
     if (!dateStr) return 'Present';
     const date = new Date(dateStr + '-01');
     return date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
 };
 
-const TechTemplate = ({ data }) => {
+const TechTemplate = ({ data }: { data: FormData }) => {
     const fullName = `${data.firstName || ''} ${data.lastName || ''}`.trim() || 'Your Name';
     const skills = (data.skillsRaw || '').split(',').map(s => s.trim()).filter(Boolean);
 
     return (
         <div className="preview-container template-tech">
-            {/* Header */}
             <div className="tech-header">
                 <div className="tech-header-content">
                     {data.image && <img src={data.image} alt="Profile" className="tech-avatar" />}
@@ -29,7 +29,6 @@ const TechTemplate = ({ data }) => {
             </div>
 
             <div className="tech-body">
-                {/* Skills First (Tech prioritizes skills) */}
                 {skills.length > 0 && (
                     <div className="tech-section">
                         <h2 className="tech-section-title">Technical Skills</h2>
@@ -41,7 +40,6 @@ const TechTemplate = ({ data }) => {
                     </div>
                 )}
 
-                {/* Summary */}
                 {data.summary && (
                     <div className="tech-section">
                         <h2 className="tech-section-title">Summary</h2>
@@ -49,7 +47,6 @@ const TechTemplate = ({ data }) => {
                     </div>
                 )}
 
-                {/* Projects (Tech prioritizes projects) */}
                 {data.projects?.length > 0 && (
                     <div className="tech-section">
                         <h2 className="tech-section-title">Projects</h2>
@@ -65,7 +62,6 @@ const TechTemplate = ({ data }) => {
                     </div>
                 )}
 
-                {/* Experience */}
                 {data.experiences?.length > 0 && (
                     <div className="tech-section">
                         <h2 className="tech-section-title">Experience</h2>
@@ -88,7 +84,6 @@ const TechTemplate = ({ data }) => {
                     </div>
                 )}
 
-                {/* Education */}
                 {data.educations?.length > 0 && (
                     <div className="tech-section">
                         <h2 className="tech-section-title">Education</h2>
@@ -105,7 +100,6 @@ const TechTemplate = ({ data }) => {
                     </div>
                 )}
 
-                {/* Achievements */}
                 {data.achievements?.length > 0 && (
                     <div className="tech-section">
                         <h2 className="tech-section-title">Achievements</h2>

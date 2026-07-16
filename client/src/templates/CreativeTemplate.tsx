@@ -1,18 +1,18 @@
 import React from 'react';
+import { FormData } from '../types';
 
-const formatDate = (dateStr) => {
+const formatDate = (dateStr: string): string => {
     if (!dateStr) return 'Present';
     const date = new Date(dateStr + '-01');
     return date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
 };
 
-const CreativeTemplate = ({ data }) => {
+const CreativeTemplate = ({ data }: { data: FormData }) => {
     const fullName = `${data.firstName || ''} ${data.lastName || ''}`.trim() || 'Your Name';
     const skills = (data.skillsRaw || '').split(',').map(s => s.trim()).filter(Boolean);
 
     return (
         <div className="preview-container template-creative">
-            {/* Bold Header */}
             <div className="creative-header">
                 <div className="creative-header-bg"></div>
                 <div className="creative-header-content">
@@ -30,7 +30,6 @@ const CreativeTemplate = ({ data }) => {
             </div>
 
             <div className="creative-body">
-                {/* Summary */}
                 {data.summary && (
                     <div className="creative-section">
                         <h2 className="creative-section-title">About Me</h2>
@@ -38,7 +37,6 @@ const CreativeTemplate = ({ data }) => {
                     </div>
                 )}
 
-                {/* Skills as visual tags */}
                 {skills.length > 0 && (
                     <div className="creative-section">
                         <h2 className="creative-section-title">Expertise</h2>
@@ -50,7 +48,6 @@ const CreativeTemplate = ({ data }) => {
                     </div>
                 )}
 
-                {/* Projects / Portfolio */}
                 {data.projects?.length > 0 && (
                     <div className="creative-section">
                         <h2 className="creative-section-title">Portfolio</h2>
@@ -66,7 +63,6 @@ const CreativeTemplate = ({ data }) => {
                     </div>
                 )}
 
-                {/* Experience */}
                 {data.experiences?.length > 0 && (
                     <div className="creative-section">
                         <h2 className="creative-section-title">Experience</h2>
@@ -92,7 +88,6 @@ const CreativeTemplate = ({ data }) => {
                     </div>
                 )}
 
-                {/* Education */}
                 {data.educations?.length > 0 && (
                     <div className="creative-section">
                         <h2 className="creative-section-title">Education</h2>
@@ -109,7 +104,6 @@ const CreativeTemplate = ({ data }) => {
                     </div>
                 )}
 
-                {/* Achievements */}
                 {data.achievements?.length > 0 && (
                     <div className="creative-section">
                         <h2 className="creative-section-title">Awards</h2>

@@ -1,10 +1,18 @@
-import React from 'react';
+import React, { useRef, useState, useCallback } from 'react';
 import {
     User, Briefcase, GraduationCap, FolderKanban, Award, Wrench,
-    ChevronDown, ChevronUp, Plus, X, Image as ImageIcon
+    ChevronDown, ChevronUp, Plus, X, Image as ImageIcon, AlertCircle
 } from 'lucide-react';
+import { FormData, OpenSections, ValidationErrors, TouchedSections } from '../types';
 
-const sectionConfig = [
+interface SectionConfig {
+    id: string;
+    title: string;
+    icon: React.ReactElement;
+    defaultOpen: boolean;
+}
+
+const sectionConfig: SectionConfig[] = [
     { id: 'about', title: 'About', icon: <User size={16} />, defaultOpen: true },
     { id: 'experience', title: 'Experience', icon: <Briefcase size={16} />, defaultOpen: false },
     { id: 'education', title: 'Education', icon: <GraduationCap size={16} />, defaultOpen: false },
@@ -13,60 +21,129 @@ const sectionConfig = [
     { id: 'achievements', title: 'Achievements', icon: <Award size={16} />, defaultOpen: false },
 ];
 
-const ResumeForm = ({ formData, setFormData, openSections, setOpenSections }) => {
+interface FormInputProps {
+    label: string;
+    error: string | null;
+    touched: boolean | undefined;
+    inputId?: string;
+    children: React.ReactNode;
+}
 
-    const toggleSection = (sectionId) => {
+const FormInput: React.FC<FormInputProps> = ({ label, error, touched, inputId, children }) => {
+    const showError = touched && error;
+    return (
+        <div className="form-group">
+            <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '4px' }} htmlFor={inputId}>
+                {label}
+                {showError && <AlertCircle size={10} color="var(--danger)" />}
+            </label>
+            {children}
+            {showError && (
+                <span style={{
+                    fontSize: '0.65rem',
+                    color: 'var(--danger)',
+                    marginTop: '0.25rem',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '3px'
+                }}>
+                    <AlertCircle size={10} /> {error}
+                </span>
+            )}
+        </div>
+    );
+};
+
+interface ResumeFormProps {
+    formData: FormData;
+    setFormData: React.Dispatch<React.SetStateAction<FormData>>;
+    openSections: OpenSections;
+    setOpenSections: React.Dispatch<React.SetStateAction<OpenSections>>;
+    errors?: ValidationErrors;
+    touched?: TouchedSections;
+    onSectionTouch?: (section: string) => void;
+}
+
+const ResumeForm: React.FC<ResumeFormProps> = ({ formData, setFormData, openSections, setOpenSections, errors = {}, touched = {}, onSectionTouch }) => {
+    const fileInputRef = useRef<HTMLInputElement>(null);
+    const [imageError, setImageError] = useState('');
+
+    const toggleSection = useCallback((sectionId: string) => {
         setOpenSections(prev => ({ ...prev, [sectionId]: !prev[sectionId] }));
-    };
+        if (onSectionTouch) onSectionTouch(sectionId);
+    }, [setOpenSections, onSectionTouch]);
 
-    const handleChange = (field, value) => {
+    const handleChange = useCallback((field: string, value: string) => {
         setFormData(prev => ({ ...prev, [field]: value }));
-    };
+    }, [setFormData]);
 
-    const handleImageUpload = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                handleChange('image', reader.result);
-            };
-            reader.readAsDataURL(file);
+    const handleImageUpload = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        // Validate file size (5MB max)
+        const maxSize = 5 * 1024 * 1024;
+        if (file.size > maxSize) {
+            setImageError('Image must be under 5MB');
+            if (fileInputRef.current) fileInputRef.current.value = '';
+            return;
         }
-    };
+
+        // Validate file type
+        const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+        if (!allowedTypes.includes(file.type)) {
+            setImageError('Only JPEG, PNG, WebP, and GIF images are allowed');
+            if (fileInputRef.current) fileInputRef.current.value = '';
+            return;
+        }
+
+        setImageError('');
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            handleChange('image', reader.result as string);
+        };
+        reader.readAsDataURL(file);
+    }, [handleChange]);
 
     // Repeater helpers
-    const addRepeaterItem = (field, template) => {
+    const addRepeaterItem = useCallback((field: string, template: Record<string, any>) => {
         setFormData(prev => ({
             ...prev,
-            [field]: [...(prev[field] || []), { ...template, id: Date.now() }]
+            [field]: [...(prev[field as keyof FormData] as any[] || []), { ...template, id: Date.now() }]
         }));
-    };
+    }, [setFormData]);
 
-    const removeRepeaterItem = (field, id) => {
+    const removeRepeaterItem = useCallback((field: string, id: number) => {
         setFormData(prev => ({
             ...prev,
-            [field]: prev[field].filter(item => item.id !== id)
+            [field]: (prev[field as keyof FormData] as any[]).filter((item: any) => item.id !== id)
         }));
-    };
+    }, [setFormData]);
 
-    const updateRepeaterItem = (field, id, key, value) => {
+    const updateRepeaterItem = useCallback((field: string, id: number, key: string, value: string) => {
         setFormData(prev => ({
             ...prev,
-            [field]: prev[field].map(item =>
+            [field]: (prev[field as keyof FormData] as any[]).map((item: any) =>
                 item.id === id ? { ...item, [key]: value } : item
             )
         }));
-    };
+    }, [setFormData]);
 
-    const renderSection = (section) => {
+    const renderSection = (section: SectionConfig) => {
         const isOpen = openSections[section.id];
+        const hasSectionError = touched[section.id] && errors[section.id] && Object.keys(errors[section.id]).length > 0;
 
         return (
             <div key={section.id} className={`form-section ${isOpen ? 'open' : ''}`}>
-                <div className="form-section-header" onClick={() => toggleSection(section.id)}>
+                <div
+                    className="form-section-header"
+                    onClick={() => toggleSection(section.id)}
+                    style={hasSectionError ? { borderLeft: '2px solid var(--danger)' } : {}}
+                >
                     <div className="form-section-title">
                         {section.icon}
                         {section.title}
+                        {hasSectionError && <AlertCircle size={12} color="var(--danger)" />}
                     </div>
                     {isOpen ? <ChevronUp size={16} color="var(--text-muted)" /> : <ChevronDown size={16} color="var(--text-muted)" />}
                 </div>
@@ -85,94 +162,123 @@ const ResumeForm = ({ formData, setFormData, openSections, setOpenSections }) =>
         );
     };
 
-    const renderAboutSection = () => (
-        <>
-            <div className="form-row">
-                <div className="form-group">
-                    <label className="form-label">First Name</label>
-                    <input
-                        className="form-input"
-                        placeholder="e.g. John"
-                        value={formData.firstName || ''}
-                        onChange={(e) => handleChange('firstName', e.target.value)}
-                    />
-                </div>
-                <div className="form-group">
-                    <label className="form-label">Last Name</label>
-                    <input
-                        className="form-input"
-                        placeholder="e.g. Doe"
-                        value={formData.lastName || ''}
-                        onChange={(e) => handleChange('lastName', e.target.value)}
-                    />
-                </div>
-            </div>
-            <div className="form-row">
-                <div className="form-group">
-                    <label className="form-label">Designation / Role</label>
-                    <input
-                        className="form-input"
-                        placeholder="e.g. Senior Software Engineer"
-                        value={formData.designation || ''}
-                        onChange={(e) => handleChange('designation', e.target.value)}
-                    />
-                </div>
-                <div className="form-group">
-                    <label className="form-label">Profile Photo</label>
-                    <div style={{ position: 'relative' }}>
+    const renderAboutSection = () => {
+        const isTouched = touched.about;
+        const secErrors = errors.about || {};
+        return (
+            <>
+                <div className="form-row">
+                    <FormInput label="First Name" error={secErrors.firstName} touched={isTouched} inputId="firstName">
                         <input
-                            type="file"
-                            accept="image/*"
-                            onChange={handleImageUpload}
-                            className="form-input"
-                            style={{ paddingLeft: '2.5rem' }}
+                            id="firstName"
+                            name="firstName"
+                            className={`form-input${secErrors.firstName && isTouched ? ' input-error' : ''}`}
+                            placeholder="e.g. John"
+                            value={formData.firstName || ''}
+                            onChange={(e) => handleChange('firstName', e.target.value)}
                         />
-                        <ImageIcon size={16} style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-dim)' }} />
+                    </FormInput>
+                    <FormInput label="Last Name" error={secErrors.lastName} touched={isTouched} inputId="lastName">
+                        <input
+                            id="lastName"
+                            name="lastName"
+                            className={`form-input${secErrors.lastName && isTouched ? ' input-error' : ''}`}
+                            placeholder="e.g. Doe"
+                            value={formData.lastName || ''}
+                            onChange={(e) => handleChange('lastName', e.target.value)}
+                        />
+                    </FormInput>
+                </div>
+                <div className="form-row">
+                    <FormInput label="Designation / Role" error={secErrors.designation} touched={isTouched} inputId="designation">
+                        <input
+                            id="designation"
+                            name="designation"
+                            className={`form-input${secErrors.designation && isTouched ? ' input-error' : ''}`}
+                            placeholder="e.g. Senior Software Engineer"
+                            value={formData.designation || ''}
+                            onChange={(e) => handleChange('designation', e.target.value)}
+                        />
+                    </FormInput>
+                    <div className="form-group">
+                        <label className="form-label" htmlFor="profilePhoto">Profile Photo</label>
+                        <div style={{ position: 'relative' }}>
+                            <input
+                                ref={fileInputRef}
+                                id="profilePhoto"
+                                name="profilePhoto"
+                                type="file"
+                                accept="image/jpeg,image/png,image/webp,image/gif"
+                                onChange={handleImageUpload}
+                                className="form-input"
+                                style={{ paddingLeft: '2.5rem' }}
+                            />
+                            <ImageIcon size={16} style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-dim)' }} />
+                        </div>
+                        {imageError && (
+                            <span style={{
+                                fontSize: '0.65rem',
+                                color: 'var(--danger)',
+                                marginTop: '0.25rem',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '3px'
+                            }}>
+                                <AlertCircle size={10} /> {imageError}
+                            </span>
+                        )}
                     </div>
                 </div>
-            </div>
-            <div className="form-row">
-                <div className="form-group">
-                    <label className="form-label">Email</label>
-                    <input
-                        className="form-input"
-                        type="email"
-                        placeholder="e.g. john@example.com"
-                        value={formData.email || ''}
-                        onChange={(e) => handleChange('email', e.target.value)}
-                    />
+                <div className="form-row">
+                    <FormInput label="Email" error={secErrors.email} touched={isTouched} inputId="email">
+                        <input
+                            id="email"
+                            name="email"
+                            className={`form-input${secErrors.email && isTouched ? ' input-error' : ''}`}
+                            type="email"
+                            placeholder="e.g. john@example.com"
+                            value={formData.email || ''}
+                            onChange={(e) => handleChange('email', e.target.value)}
+                        />
+                    </FormInput>
+                    <FormInput label="Phone" error={secErrors.phone} touched={isTouched} inputId="phone">
+                        <input
+                            id="phone"
+                            name="phone"
+                            className={`form-input${secErrors.phone && isTouched ? ' input-error' : ''}`}
+                            placeholder="e.g. +1 (555) 123-4567"
+                            value={formData.phone || ''}
+                            onChange={(e) => handleChange('phone', e.target.value)}
+                        />
+                    </FormInput>
                 </div>
-                <div className="form-group">
-                    <label className="form-label">Phone</label>
+                <FormInput label="Address" error={null} touched={false} inputId="address">
                     <input
+                        id="address"
+                        name="address"
                         className="form-input"
-                        placeholder="e.g. +1 (555) 123-4567"
-                        value={formData.phone || ''}
-                        onChange={(e) => handleChange('phone', e.target.value)}
+                        placeholder="e.g. San Francisco, CA"
+                        value={formData.address || ''}
+                        onChange={(e) => handleChange('address', e.target.value)}
                     />
-                </div>
-            </div>
-            <div className="form-group">
-                <label className="form-label">Address</label>
-                <input
-                    className="form-input"
-                    placeholder="e.g. San Francisco, CA"
-                    value={formData.address || ''}
-                    onChange={(e) => handleChange('address', e.target.value)}
-                />
-            </div>
-            <div className="form-group">
-                <label className="form-label">Professional Summary</label>
-                <textarea
-                    className="form-input"
-                    placeholder="A brief overview of your professional background..."
-                    value={formData.summary || ''}
-                    onChange={(e) => handleChange('summary', e.target.value)}
-                    style={{ minHeight: '100px' }}
-                />
-            </div>
-        </>
-    );
+                </FormInput>
+                <FormInput label="Professional Summary" error={secErrors.summary} touched={isTouched} inputId="summary">
+                    <textarea
+                        id="summary"
+                        name="summary"
+                        className={`form-input${secErrors.summary && isTouched ? ' input-error' : ''}`}
+                        placeholder="A brief overview of your professional background..."
+                        value={formData.summary || ''}
+                        onChange={(e) => handleChange('summary', e.target.value)}
+                        style={{ minHeight: '100px' }}
+                    />
+                    <span style={{ fontSize: '0.65rem', color: 'var(--text-dim)', marginTop: '0.2rem', textAlign: 'right', display: 'block' }}>
+                        {(formData.summary || '').length}/1500
+                    </span>
+                </FormInput>
+            </>
+        );
+    };
 
     const renderExperienceSection = () => (
         <>
@@ -292,8 +398,10 @@ const ResumeForm = ({ formData, setFormData, openSections, setOpenSections }) =>
     const renderSkillsSection = () => (
         <>
             <div className="form-group">
-                <label className="form-label">Skills (comma separated)</label>
+                <label className="form-label" htmlFor="skillsRaw">Skills (comma separated)</label>
                 <textarea
+                    id="skillsRaw"
+                    name="skillsRaw"
                     className="form-input"
                     placeholder="e.g. JavaScript, React, Node.js, Python, AWS..."
                     value={formData.skillsRaw || ''}

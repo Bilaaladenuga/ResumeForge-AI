@@ -3,27 +3,32 @@ import { motion } from 'framer-motion';
 import { X, Key, ExternalLink } from 'lucide-react';
 import { AI_PROVIDERS } from '../services/ai';
 
-const getStored = (key, fallback = '') => {
+interface SettingsModalProps {
+    isOpen: boolean;
+    onClose: () => void;
+}
+
+const getStored = (key: string, fallback: string = ''): string => {
     if (typeof localStorage === 'undefined') return fallback;
     return localStorage.getItem(key) || fallback;
 };
 
-const SettingsModal = ({ isOpen, onClose }) => {
+const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
     const [provider, setProvider] = useState(getStored('ai_provider', 'gemini'));
     const [geminiKey, setGeminiKey] = useState(getStored('gemini_api_key'));
     const [geminiModel, setGeminiModel] = useState(getStored('gemini_model', AI_PROVIDERS.gemini.defaultModel));
     const [openaiKey, setOpenaiKey] = useState(getStored('openai_api_key'));
-    const [openaiBaseUrl, setOpenaiBaseUrl] = useState(getStored('openai_base_url', AI_PROVIDERS.openai.defaultBaseUrl));
+    const [openaiBaseUrl, setOpenaiBaseUrl] = useState(getStored('openai_base_url', AI_PROVIDERS.openai.defaultBaseUrl || ''));
     const [openaiModel, setOpenaiModel] = useState(getStored('openai_model', AI_PROVIDERS.openai.defaultModel));
     const [openrouterKey, setOpenrouterKey] = useState(getStored('openrouter_api_key'));
     const [openrouterModel, setOpenrouterModel] = useState(getStored('openrouter_model', AI_PROVIDERS.openrouter.defaultModel));
-    const [ollamaBaseUrl, setOllamaBaseUrl] = useState(getStored('ollama_base_url', AI_PROVIDERS.ollama.defaultBaseUrl));
+    const [ollamaBaseUrl, setOllamaBaseUrl] = useState(getStored('ollama_base_url', AI_PROVIDERS.ollama.defaultBaseUrl || ''));
     const [ollamaModel, setOllamaModel] = useState(getStored('ollama_model', AI_PROVIDERS.ollama.defaultModel));
     const [saved, setSaved] = useState(false);
 
     if (!isOpen) return null;
 
-    const saveValue = (key, value) => {
+    const saveValue = (key: string, value: string) => {
         if (value.trim()) {
             localStorage.setItem(key, value.trim());
         } else {
@@ -50,7 +55,7 @@ const SettingsModal = ({ isOpen, onClose }) => {
     };
 
     const handleClearProvider = () => {
-        const active = AI_PROVIDERS[provider];
+        const active = AI_PROVIDERS[provider as keyof typeof AI_PROVIDERS];
         if (active.storageKey) localStorage.removeItem(active.storageKey);
         if (active.baseUrlKey) localStorage.removeItem(active.baseUrlKey);
         if (active.modelKey) localStorage.removeItem(active.modelKey);
@@ -132,7 +137,7 @@ const SettingsModal = ({ isOpen, onClose }) => {
     };
 
     return (
-        <div className="modal-overlay" onClick={(e) => e.target === e.currentTarget && onClose()}>
+        <div className="modal-overlay" onClick={(e) => (e.target as HTMLElement) === e.currentTarget && onClose()}>
             <motion.div className="glass-card modal-card" initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 0.25 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.5rem' }}>
                     <div>

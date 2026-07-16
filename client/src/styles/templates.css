@@ -738,6 +738,313 @@
 }
 
 
+/* === LEGAL TEMPLATE === */
+.template-legal {
+    font-family: 'Georgia', 'Times New Roman', serif;
+}
+
+.legal-header {
+    text-align: center;
+    padding: 2.5rem 2rem 0;
+    position: relative;
+}
+
+.legal-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #1e3a5f;
+    margin-bottom: 1rem;
+}
+
+.legal-name {
+    font-size: 2.4rem;
+    font-weight: 800;
+    color: #0c1a2e;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 0.2rem;
+}
+
+.legal-designation {
+    color: #1e3a5f;
+    font-size: 1rem;
+    font-weight: 600;
+    font-family: 'Inter', sans-serif;
+    margin-bottom: 0.75rem;
+}
+
+.legal-contact {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    font-size: 0.8rem;
+    color: #4b5563;
+    font-family: 'Inter', sans-serif;
+    margin-bottom: 0.5rem;
+}
+
+.legal-header-bar {
+    height: 4px;
+    background: linear-gradient(90deg, #1e3a5f, #4a7db5, #1e3a5f);
+    margin: 1rem 0 0;
+    border: none;
+}
+
+.legal-body {
+    padding: 1.5rem 2rem 2rem;
+}
+
+.legal-section {
+    margin-bottom: 1.5rem;
+}
+
+.legal-section-title {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #1e3a5f;
+    border-bottom: 1px solid #1e3a5f;
+    padding-bottom: 0.35rem;
+    margin-bottom: 0.75rem;
+    font-weight: 700;
+    font-family: 'Inter', sans-serif;
+}
+
+.legal-text {
+    color: #374151;
+    font-size: 0.85rem;
+    line-height: 1.65;
+}
+
+.legal-entry {
+    margin-bottom: 1.1rem;
+}
+
+.legal-entry-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+}
+
+.legal-entry-header strong {
+    font-size: 0.95rem;
+    color: #0c1a2e;
+}
+
+.legal-company {
+    font-size: 0.8rem;
+    color: #6b7280;
+    font-style: italic;
+    margin: 0;
+}
+
+.legal-date {
+    font-size: 0.75rem;
+    color: #6b7280;
+    white-space: nowrap;
+    font-family: 'Inter', sans-serif;
+}
+
+.legal-bullets {
+    list-style: none;
+    padding: 0;
+    margin: 0.35rem 0 0;
+}
+
+.legal-bullets li {
+    font-size: 0.82rem;
+    color: #374151;
+    padding-left: 1.1rem;
+    position: relative;
+    margin-bottom: 0.2rem;
+    line-height: 1.55;
+}
+
+.legal-bullets li::before {
+    content: '§';
+    position: absolute;
+    left: 0;
+    color: #1e3a5f;
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+.legal-skills-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1rem;
+}
+
+.legal-skill-item {
+    font-size: 0.82rem;
+    color: #374151;
+    padding: 0.15rem 0;
+    position: relative;
+    padding-left: 0.75rem;
+}
+
+.legal-skill-item::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: #1e3a5f;
+    font-weight: bold;
+}
+
+
+/* === EDUCATION TEMPLATE === */
+.template-education {
+    font-family: 'Inter', sans-serif;
+}
+
+.edu-header {
+    background: linear-gradient(135deg, #3d1a1a, #5c2a2a);
+    padding: 2.5rem 2rem;
+    color: white;
+    position: relative;
+}
+
+.edu-header::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #c9a84c, #f0d78c, #c9a84c);
+}
+
+.edu-header-content {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.edu-avatar {
+    width: 85px;
+    height: 85px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+}
+
+.edu-name {
+    font-size: 2rem;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    margin-bottom: 0.2rem;
+}
+
+.edu-designation {
+    color: #f0d78c;
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.edu-contact {
+    display: flex;
+    gap: 1.25rem;
+    flex-wrap: wrap;
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.75);
+}
+
+.edu-body {
+    padding: 2rem;
+}
+
+.edu-section {
+    margin-bottom: 1.75rem;
+}
+
+.edu-section-title {
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #5c2a2a;
+    border-bottom: 2px solid #c9a84c;
+    padding-bottom: 0.35rem;
+    margin-bottom: 0.75rem;
+    font-weight: 800;
+}
+
+.edu-text {
+    color: #374151;
+    font-size: 0.85rem;
+    line-height: 1.65;
+}
+
+.edu-entry {
+    margin-bottom: 1.25rem;
+}
+
+.edu-entry-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+}
+
+.edu-entry-header strong {
+    font-size: 0.95rem;
+    color: #1a1a1a;
+}
+
+.edu-institution {
+    font-size: 0.8rem;
+    color: #6b7280;
+    margin: 0;
+}
+
+.edu-date {
+    font-size: 0.75rem;
+    color: #6b7280;
+    white-space: nowrap;
+}
+
+.edu-bullets {
+    list-style: none;
+    padding: 0;
+    margin: 0.35rem 0 0;
+}
+
+.edu-bullets li {
+    font-size: 0.82rem;
+    color: #374151;
+    padding-left: 1rem;
+    position: relative;
+    margin-bottom: 0.25rem;
+    line-height: 1.55;
+}
+
+.edu-bullets li::before {
+    content: '▸';
+    position: absolute;
+    left: 0;
+    color: #c9a84c;
+    font-weight: bold;
+}
+
+.edu-skills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.edu-skill-chip {
+    background: #fdf6ec;
+    color: #5c2a2a;
+    padding: 0.3rem 0.85rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border: 1px solid #e8d5b0;
+}
+
+
 /* === PRINT OVERRIDES === */
 @media print {
     .preview-container {

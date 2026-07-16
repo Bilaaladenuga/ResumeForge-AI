@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Cpu, Sparkles, Target, Wand2, Wrench, FileText, Activity, Copy, Check } from 'lucide-react';
+import { FormData, ATSData, LoadingState } from '../types';
 import {
     generateSummary,
     tailorSummary,
@@ -13,21 +14,28 @@ import {
     getProviderConfig
 } from '../services/ai';
 
-const AIPanel = ({ formData, setFormData, industry, onOpenSettings }) => {
-    const [loading, setLoading] = useState({});
+interface AIPanelProps {
+    formData: FormData;
+    setFormData: React.Dispatch<React.SetStateAction<FormData>>;
+    industry: string;
+    onOpenSettings: () => void;
+}
+
+const AIPanel = ({ formData, setFormData, industry, onOpenSettings }: AIPanelProps) => {
+    const [loading, setLoading] = useState<LoadingState>({});
     const [error, setError] = useState('');
     const [jobDescription, setJobDescription] = useState('');
     const [bulletInput, setBulletInput] = useState('');
     const [bulletResult, setBulletResult] = useState('');
     const [coverLetter, setCoverLetter] = useState('');
-    const [atsData, setAtsData] = useState(null);
+    const [atsData, setAtsData] = useState<ATSData | null>(null);
     const [copied, setCopied] = useState(false);
 
     const hasApiKey = checkApiKey();
     const providerConfig = getProviderConfig();
 
-    const getAIErrorMessage = (err) => {
-        const message = err?.message || '';
+    const getAIErrorMessage = (err: unknown): string => {
+        const message = (err as Error)?.message || '';
 
         if (message.includes('429') || message.toLowerCase().includes('quota')) {
             return `${providerConfig.label} could not generate this because the provider quota or rate limit was reached. ResumeForge used a built-in fallback where available.`;
@@ -40,7 +48,7 @@ const AIPanel = ({ formData, setFormData, industry, onOpenSettings }) => {
         return 'AI generation failed. ResumeForge used a built-in fallback where available.';
     };
 
-    const handleAIError = (label, err) => {
+    const handleAIError = (label: string, err: unknown) => {
         console.error(`${label} failed:`, err);
         setError(getAIErrorMessage(err));
     };
@@ -350,7 +358,7 @@ const AIPanel = ({ formData, setFormData, industry, onOpenSettings }) => {
                 {atsData && (
                     <div className="ats-result">
                         <div className="ats-score-container">
-                            <div className="ats-score-circle" style={{ '--score': `${atsData.score}%` }}>
+                            <div className="ats-score-circle" style={{ '--score': `${atsData.score}%` } as React.CSSProperties}>
                                 <span>{atsData.score}</span>
                             </div>
                             <div className="ats-score-info">

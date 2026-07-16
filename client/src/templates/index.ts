@@ -1,10 +1,13 @@
+import { TemplateConfig } from '../types';
 import TechTemplate from './TechTemplate';
 import FinanceTemplate from './FinanceTemplate';
 import HealthcareTemplate from './HealthcareTemplate';
 import CreativeTemplate from './CreativeTemplate';
 import GeneralTemplate from './GeneralTemplate';
+import LegalTemplate from './LegalTemplate';
+import EducationTemplate from './EducationTemplate';
 
-const templates = {
+const templates: Record<string, TemplateConfig> = {
     tech: {
         id: 'tech',
         name: 'Tech / IT',
@@ -34,9 +37,21 @@ const templates = {
         name: 'General',
         component: GeneralTemplate,
         industry: 'general'
+    },
+    legal: {
+        id: 'legal',
+        name: 'Legal / Consulting',
+        component: LegalTemplate,
+        industry: 'legal'
+    },
+    education: {
+        id: 'education',
+        name: 'Education',
+        component: EducationTemplate,
+        industry: 'education'
     }
 };
 
-export const getTemplate = (id) => templates[id] || templates.general;
-export const getAllTemplates = () => Object.values(templates);
+export const getTemplate = (id: string): TemplateConfig => templates[id] || templates.general;
+export const getAllTemplates = (): TemplateConfig[] => Object.values(templates);
 export default templates;

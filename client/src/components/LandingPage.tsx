@@ -1,4 +1,4 @@
-"use client";
+'use client';
 import React from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
@@ -26,7 +26,7 @@ const LandingPage = () => {
         visible: {
             opacity: 1,
             y: 0,
-            transition: { duration: 0.6, ease: "easeOut" }
+            transition: { duration: 0.6, ease: "easeOut" as const }
         }
     };
 
@@ -256,7 +256,7 @@ const LandingPage = () => {
                 </div>
             </section>
 
-            {/* Authentic Showcase Section (Pictures at the bottom) */}
+            {/* Authentic Showcase Section */}
             <section className="section section-showcase">
                 <div className="container text-center">
                     <h2 className="section-title center">Authentic Experience. Real Results.</h2>
@@ -297,4 +297,3 @@ const LandingPage = () => {
 };
 
 export default LandingPage;
-

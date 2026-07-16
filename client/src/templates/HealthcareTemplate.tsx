@@ -1,19 +1,19 @@
 import React from 'react';
+import { FormData } from '../types';
 
-const formatDate = (dateStr) => {
+const formatDate = (dateStr: string): string => {
     if (!dateStr) return 'Present';
     const date = new Date(dateStr + '-01');
     return date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
 };
 
-const HealthcareTemplate = ({ data }) => {
+const HealthcareTemplate = ({ data }: { data: FormData }) => {
     const fullName = `${data.firstName || ''} ${data.lastName || ''}`.trim() || 'Your Name';
     const skills = (data.skillsRaw || '').split(',').map(s => s.trim()).filter(Boolean);
 
     return (
         <div className="preview-container template-healthcare">
             <div className="hc-layout">
-                {/* Sidebar */}
                 <div className="hc-sidebar">
                     {data.image && <img src={data.image} alt="Profile" className="hc-avatar" />}
                     <h1 className="hc-name">{fullName}</h1>
@@ -50,7 +50,6 @@ const HealthcareTemplate = ({ data }) => {
                     )}
                 </div>
 
-                {/* Main Content */}
                 <div className="hc-main">
                     {data.summary && (
                         <div className="hc-section">

@@ -1,6 +1,11 @@
+import { ProviderConfig, AIProvider, AIPromptParams, TailorParams, PowerUpParams, SkillsParams, CoverLetterParams, ATSParams } from '../types';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
-export const AI_PROVIDERS = {
+interface AIProvidersMap {
+    [key: string]: AIProvider;
+}
+
+export const AI_PROVIDERS: AIProvidersMap = {
     gemini: {
         name: 'Gemini',
         storageKey: 'gemini_api_key',
@@ -31,19 +36,19 @@ export const AI_PROVIDERS = {
     }
 };
 
-export const getActiveProvider = () => {
+export const getActiveProvider = (): string => {
     if (typeof localStorage === 'undefined') return 'gemini';
     return localStorage.getItem('ai_provider') || 'gemini';
 };
 
-export const getProviderConfig = () => {
+export const getProviderConfig = (): ProviderConfig => {
     if (typeof localStorage === 'undefined') {
         return {
             provider: 'gemini',
             label: AI_PROVIDERS.gemini.name,
             apiKey: '',
             model: AI_PROVIDERS.gemini.defaultModel,
-            baseUrl: AI_PROVIDERS.gemini.defaultBaseUrl
+            baseUrl: AI_PROVIDERS.gemini.defaultBaseUrl || ''
         };
     }
 
@@ -55,22 +60,33 @@ export const getProviderConfig = () => {
         label: defaults.name,
         apiKey: defaults.storageKey ? localStorage.getItem(defaults.storageKey) || '' : '',
         model: localStorage.getItem(defaults.modelKey) || defaults.defaultModel,
-        baseUrl: defaults.baseUrlKey ? localStorage.getItem(defaults.baseUrlKey) || defaults.defaultBaseUrl : defaults.defaultBaseUrl
+        baseUrl: defaults.baseUrlKey ? localStorage.getItem(defaults.baseUrlKey) || defaults.defaultBaseUrl || '' : defaults.defaultBaseUrl || ''
     };
 };
 
-const assertConfigured = ({ provider, label, apiKey, baseUrl }) => {
-    if (provider !== 'ollama' && !apiKey) {
-        throw new Error(`No API key configured for ${label}`);
+const assertConfigured = (config: ProviderConfig): void => {
+    if (config.provider !== 'ollama' && !config.apiKey) {
+        throw new Error(`No API key configured for ${config.label}`);
     }
 
-    if ((provider === 'openai' || provider === 'openrouter' || provider === 'ollama') && !baseUrl) {
-        throw new Error(`No base URL configured for ${label}`);
+    if ((config.provider === 'openai' || config.provider === 'openrouter' || config.provider === 'ollama') && !config.baseUrl) {
+        throw new Error(`No base URL configured for ${config.label}`);
     }
 };
 
-const parseOpenAIResponse = async (response, providerLabel) => {
-    const data = await response.json().catch(() => null);
+interface OpenAIResponse {
+    choices?: Array<{
+        message?: {
+            content?: string;
+        };
+    }>;
+    error?: {
+        message?: string;
+    };
+}
+
+const parseOpenAIResponse = async (response: Response, providerLabel: string): Promise<string> => {
+    const data: OpenAIResponse | null = await response.json().catch(() => null);
 
     if (!response.ok) {
         throw new Error(data?.error?.message || `${providerLabel} request failed with status ${response.status}`);
@@ -79,14 +95,14 @@ const parseOpenAIResponse = async (response, providerLabel) => {
     return data?.choices?.[0]?.message?.content?.trim() || '';
 };
 
-const callGemini = async (prompt, config) => {
+const callGemini = async (prompt: string, config: ProviderConfig): Promise<string> => {
     const genAI = new GoogleGenerativeAI(config.apiKey);
     const model = genAI.getGenerativeModel({ model: config.model });
     const result = await model.generateContent(prompt);
     return result.response.text();
 };
 
-const callOpenAICompatible = async (prompt, config) => {
+const callOpenAICompatible = async (prompt: string, config: ProviderConfig): Promise<string> => {
     const response = await fetch(`${config.baseUrl.replace(/\/$/, '')}/chat/completions`, {
         method: 'POST',
         headers: {
@@ -103,13 +119,13 @@ const callOpenAICompatible = async (prompt, config) => {
     return parseOpenAIResponse(response, config.label);
 };
 
-const callOpenRouter = async (prompt, config) => {
+const callOpenRouter = async (prompt: string, config: ProviderConfig): Promise<string> => {
     const response = await fetch(`${config.baseUrl.replace(/\/$/, '')}/chat/completions`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${config.apiKey}`,
-            'HTTP-Referer': window.location.origin,
+            'HTTP-Referer': typeof window !== 'undefined' ? window.location.origin : '',
             'X-Title': 'ResumeForge AI'
         },
         body: JSON.stringify({
@@ -122,7 +138,12 @@ const callOpenRouter = async (prompt, config) => {
     return parseOpenAIResponse(response, config.label);
 };
 
-const callOllama = async (prompt, config) => {
+interface OllamaResponse {
+    response?: string;
+    error?: string;
+}
+
+const callOllama = async (prompt: string, config: ProviderConfig): Promise<string> => {
     const response = await fetch(`${config.baseUrl.replace(/\/$/, '')}/api/generate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -132,7 +153,7 @@ const callOllama = async (prompt, config) => {
             stream: false
         })
     });
-    const data = await response.json().catch(() => null);
+    const data: OllamaResponse | null = await response.json().catch(() => null);
 
     if (!response.ok) {
         throw new Error(data?.error || `Ollama request failed with status ${response.status}`);
@@ -141,7 +162,7 @@ const callOllama = async (prompt, config) => {
     return data?.response?.trim() || '';
 };
 
-const generateWithProvider = async (prompt) => {
+export const generateWithProvider = async (prompt: string): Promise<string> => {
     const config = getProviderConfig();
     assertConfigured(config);
 
@@ -151,11 +172,11 @@ const generateWithProvider = async (prompt) => {
     return callGemini(prompt, config);
 };
 
-const getPrimarySkill = (skills = '') => {
+const getPrimarySkill = (skills: string = ''): string => {
     return skills.split(',').map(skill => skill.trim()).filter(Boolean)[0] || 'cross-functional collaboration';
 };
 
-export const generateFallbackSummary = ({ name, role, experience, skills, industry }) => {
+export const generateFallbackSummary = ({ name, role, experience, skills, industry }: AIPromptParams): string => {
     const displayName = name || 'This candidate';
     const targetRole = role || `${industry || 'professional'} candidate`;
     const primarySkill = getPrimarySkill(skills);
@@ -166,14 +187,14 @@ export const generateFallbackSummary = ({ name, role, experience, skills, indust
     return `${displayName} is a results-driven ${targetRole}${experienceText}. Skilled in ${primarySkill}, clear communication, and practical problem solving, they bring a focused approach to delivering measurable value. They are prepared to contribute to ${industry || 'business'} teams by combining technical strengths, adaptability, and a strong attention to detail.`;
 };
 
-export const generateFallbackBullet = ({ bulletText, role, industry }) => {
+export const generateFallbackBullet = ({ bulletText, role, industry }: PowerUpParams): string => {
     const action = bulletText.trim().replace(/[.]+$/, '');
     const context = role || `${industry || 'professional'} role`;
 
     return `Improved ${action.toLowerCase()} in a ${context}, strengthening team efficiency, delivery quality, and measurable business impact.`;
 };
 
-export const generateSummary = async ({ name, role, experience, skills, industry }) => {
+export const generateSummary = async ({ name, role, experience, skills, industry }: AIPromptParams): Promise<string> => {
     const prompt = `You are a professional resume writer specializing in the ${industry || 'general'} industry.
 Write a compelling, ATS-optimized professional summary (3-4 sentences) for:
 - Name: ${name}
@@ -191,7 +212,7 @@ Rules:
     return generateWithProvider(prompt);
 };
 
-export const tailorSummary = async ({ currentSummary, jobDescription }) => {
+export const tailorSummary = async ({ currentSummary, jobDescription }: TailorParams): Promise<string> => {
     const prompt = `You are an expert resume tailor. Rewrite this professional summary to better match the job description below.
 
 Current Summary:
@@ -210,7 +231,7 @@ Rules:
     return generateWithProvider(prompt);
 };
 
-export const powerUpBullet = async ({ bulletText, role, industry }) => {
+export const powerUpBullet = async ({ bulletText, role, industry }: PowerUpParams): Promise<string> => {
     const prompt = `You are a resume optimization expert for the ${industry || 'general'} industry.
 Transform this simple task description into a powerful, quantified achievement bullet point:
 
@@ -228,7 +249,7 @@ Rules:
     return generateWithProvider(prompt);
 };
 
-export const generateSkills = async ({ role, rawSkills, industry }) => {
+export const generateSkills = async ({ role, rawSkills, industry }: SkillsParams): Promise<string> => {
     const prompt = `You are a resume expert for the ${industry || 'general'} industry.
 Given this role and raw skills, organize and enhance them into professional skill categories:
 
@@ -244,7 +265,7 @@ Rules:
     return generateWithProvider(prompt);
 };
 
-export const generateCoverLetter = async ({ name, role, experience, skills, jobDescription, industry }) => {
+export const generateCoverLetter = async ({ name, role, experience, skills, jobDescription, industry }: CoverLetterParams): Promise<string> => {
     const prompt = `You are a professional career coach and resume writer for the ${industry || 'general'} industry.
 Write a personalized, high-impact cover letter for:
 - Name: ${name}
@@ -264,7 +285,7 @@ Rules:
     return generateWithProvider(prompt);
 };
 
-export const analyzeATSCompatibility = async ({ role, summary, skills, experience, jobDescription }) => {
+export const analyzeATSCompatibility = async ({ role, summary, skills, experience, jobDescription }: ATSParams): Promise<string> => {
     const prompt = `You are an ATS (Applicant Tracking System) algorithm expert. 
 Analyze the compatibility between this resume and the job description.
 
@@ -289,7 +310,7 @@ Rules:
     return generateWithProvider(prompt);
 };
 
-export const checkApiKey = () => {
+export const checkApiKey = (): boolean => {
     if (typeof localStorage === 'undefined') return false;
 
     const config = getProviderConfig();

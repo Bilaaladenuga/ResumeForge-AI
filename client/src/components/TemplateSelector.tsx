@@ -1,10 +1,20 @@
-"use client";
+'use client';
 import React from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { Sparkles, Code, DollarSign, Heart, Palette, FileText, ArrowLeft } from 'lucide-react';
+import { Sparkles, Code, DollarSign, Heart, Palette, FileText, Scale, BookOpen, ArrowLeft } from 'lucide-react';
 
-const templates = [
+interface TemplateCard {
+    id: string;
+    name: string;
+    icon: React.ReactElement;
+    description: string;
+    color: string;
+    bgGradient: string;
+    badge: string | null;
+}
+
+const templates: TemplateCard[] = [
     {
         id: 'tech',
         name: 'Tech / IT',
@@ -49,13 +59,31 @@ const templates = [
         color: '#64748b',
         bgGradient: 'linear-gradient(135deg, #111827, #1e293b)',
         badge: 'ATS-Friendly'
+    },
+    {
+        id: 'legal',
+        name: 'Legal / Consulting',
+        icon: <Scale size={24} />,
+        description: 'Classic law firm layout for attorneys, paralegals, and consultants. Emphasizes education, bar admissions, and client experience.',
+        color: '#1e3a5f',
+        bgGradient: 'linear-gradient(135deg, #0c1a2e, #1a2d4a)',
+        badge: 'New'
+    },
+    {
+        id: 'education',
+        name: 'Education',
+        icon: <BookOpen size={24} />,
+        description: 'Scholarly academic layout for teachers, professors, and researchers. Highlights degrees, teaching experience, and publications.',
+        color: '#7d2e2e',
+        bgGradient: 'linear-gradient(135deg, #1f0d0d, #3a1a1a)',
+        badge: 'New'
     }
 ];
 
 const TemplateSelector = () => {
     const router = useRouter();
 
-    const handleSelect = (templateId) => {
+    const handleSelect = (templateId: string) => {
         router.push(`/builder/${templateId}`);
     };
 
@@ -111,7 +139,7 @@ const TemplateSelector = () => {
                                     height: '100%',
                                     color: tmpl.color
                                 }}>
-                                    {React.cloneElement(tmpl.icon, { size: 48 })}
+                                    {React.cloneElement(tmpl.icon as React.ReactElement<{ size?: number }>, { size: 48 })}
                                 </div>
                                 {tmpl.badge && (
                                     <span

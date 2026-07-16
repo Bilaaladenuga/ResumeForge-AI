@@ -1,18 +1,18 @@
 import React from 'react';
+import { FormData } from '../types';
 
-const formatDate = (dateStr) => {
+const formatDate = (dateStr: string): string => {
     if (!dateStr) return 'Present';
     const date = new Date(dateStr + '-01');
     return date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
 };
 
-const FinanceTemplate = ({ data }) => {
+const FinanceTemplate = ({ data }: { data: FormData }) => {
     const fullName = `${data.firstName || ''} ${data.lastName || ''}`.trim() || 'Your Name';
     const skills = (data.skillsRaw || '').split(',').map(s => s.trim()).filter(Boolean);
 
     return (
         <div className="preview-container template-finance">
-            {/* Header */}
             <div className="finance-header">
                 {data.image && <img src={data.image} alt="Profile" className="finance-avatar" />}
                 <div>
@@ -27,7 +27,6 @@ const FinanceTemplate = ({ data }) => {
             </div>
 
             <div className="finance-body">
-                {/* Summary */}
                 {data.summary && (
                     <div className="finance-section">
                         <h2 className="finance-section-title">Professional Summary</h2>
@@ -35,7 +34,6 @@ const FinanceTemplate = ({ data }) => {
                     </div>
                 )}
 
-                {/* Experience first for Finance */}
                 {data.experiences?.length > 0 && (
                     <div className="finance-section">
                         <h2 className="finance-section-title">Professional Experience</h2>
@@ -60,7 +58,6 @@ const FinanceTemplate = ({ data }) => {
                     </div>
                 )}
 
-                {/* Education */}
                 {data.educations?.length > 0 && (
                     <div className="finance-section">
                         <h2 className="finance-section-title">Education</h2>
@@ -79,7 +76,6 @@ const FinanceTemplate = ({ data }) => {
                     </div>
                 )}
 
-                {/* Skills */}
                 {skills.length > 0 && (
                     <div className="finance-section">
                         <h2 className="finance-section-title">Core Competencies</h2>
@@ -87,7 +83,6 @@ const FinanceTemplate = ({ data }) => {
                     </div>
                 )}
 
-                {/* Achievements */}
                 {data.achievements?.length > 0 && (
                     <div className="finance-section">
                         <h2 className="finance-section-title">Awards & Certifications</h2>
@@ -100,7 +95,6 @@ const FinanceTemplate = ({ data }) => {
                     </div>
                 )}
 
-                {/* Projects */}
                 {data.projects?.length > 0 && (
                     <div className="finance-section">
                         <h2 className="finance-section-title">Key Projects</h2>
