@@ -112,7 +112,7 @@ export function getStyleLabel(style: WritingStyle): string {
 /**
  * Save/load writing style preference from localStorage
  */
-const STYLE_STORAGE_KEY = 'resumeforge_writing_style';
+const STYLE_STORAGE_KEY = 'resucraft_writing_style';
 
 export function getSavedStyle(): WritingStyle {
     if (typeof localStorage === 'undefined') return 'professional';

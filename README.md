@@ -74,8 +74,8 @@ The project was migrated from Vite to Next.js and now uses the Next App Router f
 ### Installation
 
 ```bash
-git clone https://github.com/Bilaaladenuga/ResumeForge-AI.git
-cd ResumeForge-AI/client
+git clone https://github.com/Bilaaladenuga/ResuCraft.git
+cd ResuCraft/client
 npm install
 npm run dev
 ```
@@ -123,7 +123,7 @@ npm run lint
 ## Project Structure
 
 ```text
-ResumeForge-AI/
+ResuCraft/
   README.md
   screenshots/
   client/

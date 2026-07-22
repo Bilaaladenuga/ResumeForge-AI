@@ -1,6 +1,44 @@
 import { FormData, StoredDraft, StoredResume, ResumeMeta, ExportedResume } from '../types';
 
-const STORAGE_PREFIX = 'resumeforge_';
+const STORAGE_PREFIX = 'resucraft_';
+const OLD_PREFIX = 'resumeforge_';
+
+// ─── One-time migration from old prefix ───
+function migrateFromOldPrefix(): void {
+    try {
+        const oldKeys = Object.keys(localStorage).filter(k => k.startsWith(OLD_PREFIX));
+        if (oldKeys.length === 0) return; // Nothing to migrate
+
+        let migrated = 0;
+        for (const key of oldKeys) {
+            const newKey = key.replace(OLD_PREFIX, STORAGE_PREFIX);
+            if (!localStorage.getItem(newKey)) {
+                const value = localStorage.getItem(key);
+                if (value) {
+                    localStorage.setItem(newKey, value);
+                    migrated++;
+                }
+            }
+        }
+
+        // Also migrate writing style key separately (not prefix-based)
+        const oldStyle = localStorage.getItem('resumeforge_writing_style');
+        if (oldStyle && !localStorage.getItem('resucraft_writing_style')) {
+            localStorage.setItem('resucraft_writing_style', oldStyle);
+            migrated++;
+        }
+
+        if (migrated > 0) {
+            console.log(`Migrated ${migrated} items from '${OLD_PREFIX}' to '${STORAGE_PREFIX}'`);
+        }
+    } catch (err) {
+        console.warn('Failed to migrate old storage prefix:', err);
+    }
+}
+
+// Run migration immediately
+migrateFromOldPrefix();
+
 const DRAFT_KEY = (templateId: string): string => `${STORAGE_PREFIX}draft_${templateId}`;
 const LAST_TEMPLATE_KEY = `${STORAGE_PREFIX}last_template`;
 const RESUME_INDEX_KEY = `${STORAGE_PREFIX}resume_index`;
