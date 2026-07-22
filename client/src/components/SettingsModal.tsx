@@ -172,7 +172,7 @@ const SettingsModal = ({ isOpen, onClose }: SettingsModalProps) => {
                         <h2 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                             <Key size={20} /> AI Configuration
                         </h2>
-                        <p style={{ marginBottom: 0 }}>Choose how ResumeForge should power AI writing tools.</p>
+                        <p style={{ marginBottom: 0 }}>Choose how ResuCraft should power AI writing tools.</p>
 
                         {!geminiKey && provider === 'gemini' && (
                             <div style={{

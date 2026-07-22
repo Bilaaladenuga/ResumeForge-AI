@@ -127,7 +127,7 @@ const callOpenRouter = async (prompt: string, config: ProviderConfig): Promise<s
             'Content-Type': 'application/json',
             Authorization: `Bearer ${config.apiKey}`,
             'HTTP-Referer': typeof window !== 'undefined' ? window.location.origin : '',
-            'X-Title': 'ResumeForge AI'
+            'X-Title': 'ResuCraft'
         },
         body: JSON.stringify({
             model: config.model,

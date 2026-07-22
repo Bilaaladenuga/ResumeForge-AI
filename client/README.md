@@ -1,6 +1,6 @@
-# ResumeForge AI Client
+# ResuCraft Client
 
-This is the Next.js client app for ResumeForge AI.
+This is the Next.js client app for ResuCraft.
 
 ## Routes
 
@@ -8,7 +8,7 @@ This is the Next.js client app for ResumeForge AI.
 - `/templates` - template selector
 - `/builder/[templateId]` - resume builder
 
-Supported template IDs are `tech`, `finance`, `healthcare`, `creative`, and `general`.
+Supported template IDs are `tech`, `finance`, `healthcare`, `creative`, `general`, `legal`, and `education`.
 
 ## Local Development
 
@@ -39,10 +39,11 @@ npm run lint
 
 ```text
 src/app/          Next.js App Router pages and global layout
-src/components/   Builder, landing page, selector, forms, and AI panel
+src/components/   Builder, landing page, selector, forms, AI panel, modals
 src/templates/    Resume template React components
 src/styles/       Template-specific CSS
-src/services/     AI provider routing and fallback writing
+src/services/     AI provider routing, storage, validation, spell check, LinkedIn parser
+src/types/        TypeScript interfaces and module declarations
 public/           Static assets
 ```
 

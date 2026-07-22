@@ -19,7 +19,7 @@ export async function generateMetadata({ params }: BuilderPageParams): Promise<M
     const name = templateNames[resolvedParams.templateId] || 'Resume';
 
     return {
-        title: `${name} Resume Builder | ResumeForge AI`,
+        title: `${name} Resume Builder | ResuCraft`,
         description: `Build a professional ${name} resume with AI-powered assistance.`,
     };
 }

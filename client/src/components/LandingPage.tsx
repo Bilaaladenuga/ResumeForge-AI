@@ -42,7 +42,7 @@ const LandingPage = () => {
                     <div className="navbar-inner">
                         <div className="navbar-brand">
                             <Sparkles color="var(--secondary)" size={28} />
-                            <span className="navbar-brand-text gradient-text">ResumeForge</span>
+                            <span className="navbar-brand-text gradient-text">ResuCraft</span>
                         </div>
                     </div>
                 </div>
@@ -298,7 +298,7 @@ const LandingPage = () => {
             {/* Footer */}
             <footer className="footer">
                 <div className="container">
-                    <p className="footer-copyright">&copy; 2026 ResumeForge AI. Built by Bilaal — All Rights Reserved.</p>
+                    <p className="footer-copyright">&copy; 2026 ResuCraft. Built by Bilaal — All Rights Reserved.</p>
                 </div>
             </footer>
             {/* Resume Manager Modal */}

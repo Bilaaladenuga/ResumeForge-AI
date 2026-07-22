@@ -1,7 +1,7 @@
 'use client';
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
-import { Sparkles, Settings, Download, ArrowLeft, ShieldCheck, AlertCircle, Save, Upload, Trash2, Linkedin, TrendingUp, Files, ChevronDown, Plus, Edit3, Copy, Check, BookOpen } from 'lucide-react';
+import { Sparkles, Settings, Download, ArrowLeft, ShieldCheck, AlertCircle, Save, Upload, Trash2, Linkedin, TrendingUp, Files, ChevronDown, Plus, Edit3, Copy, Check, BookOpen, Undo2, Redo2 } from 'lucide-react';
 import ResumeForm from './ResumeForm';
 import ResumePreview from './ResumePreview';
 import AIPanel from './AIPanel';
@@ -13,6 +13,7 @@ import ResumeManager from './ResumeManager';
 import SpellCheckModal from './SpellCheckModal';
 import { getTemplate } from '../templates';
 import { checkApiKey } from '../services/ai';
+import { useUndoRedo } from '../services/undoService';
 import {
     saveDraft, loadDraft, clearDraft, exportResumeAsJSON, importResumeFromJSON,
     getResumeById, saveResume, getResumeIndex, getActiveResumeId,
@@ -50,7 +51,7 @@ const ResumeBuilder = () => {
 
     const [showSettings, setShowSettings] = useState(false);
     const [showResumeManager, setShowResumeManager] = useState(false);
-    const [formData, setFormData] = useState<FormData>(DEFAULT_FORM_DATA);
+    const { state: formData, setState: setFormData, undo, redo, canUndo, canRedo } = useUndoRedo(DEFAULT_FORM_DATA);
     const [currentResumeId, setCurrentResumeId] = useState<string | null>(null);
     const [currentResumeName, setCurrentResumeName] = useState<string>('');
     const [openSections, setOpenSections] = useState<OpenSections>({
@@ -120,6 +121,33 @@ const ResumeBuilder = () => {
     useEffect(() => {
         refreshResumeList();
     }, [refreshResumeList, formData]);
+
+    // Keyboard shortcuts: Ctrl+Z = undo, Ctrl+Shift+Z = redo
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            // Don't interfere with text editing shortcuts
+            const tag = (e.target as HTMLElement)?.tagName || '';
+            const isInput = tag === 'INPUT' || tag === 'TEXTAREA';
+            if (isInput && (e.ctrlKey || e.metaKey)) {
+                // Allow native undo/redo in text fields — only intercept if modifier+shift+z
+                if (e.key === 'z' && e.shiftKey) {
+                    e.preventDefault();
+                    redo();
+                }
+                return;
+            }
+            if ((e.ctrlKey || e.metaKey) && e.key === 'z') {
+                e.preventDefault();
+                if (e.shiftKey) {
+                    redo();
+                } else {
+                    undo();
+                }
+            }
+        };
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [undo, redo]);
 
     // Close dropdown on outside click
     useEffect(() => {
@@ -290,7 +318,7 @@ const ResumeBuilder = () => {
                     <div className="navbar-inner">
                         <div className="navbar-brand" onClick={() => router.push('/')}>
                             <Sparkles color="var(--secondary)" size={24} />
-                            <span className="navbar-brand-text gradient-text">ResumeForge</span>
+                            <span className="navbar-brand-text gradient-text">ResuCraft</span>
                         </div>
 
                         <div className="navbar-actions">
@@ -461,6 +489,26 @@ const ResumeBuilder = () => {
                                      'Save failed'}
                                 </span>
                             )}
+
+                            {/* Undo / Redo */}
+                            <button
+                                className="btn btn-ghost btn-sm"
+                                onClick={undo}
+                                disabled={!canUndo}
+                                title="Undo (Ctrl+Z)"
+                                style={{ opacity: canUndo ? 1 : 0.3, cursor: canUndo ? 'pointer' : 'not-allowed' }}
+                            >
+                                <Undo2 size={14} />
+                            </button>
+                            <button
+                                className="btn btn-ghost btn-sm"
+                                onClick={redo}
+                                disabled={!canRedo}
+                                title="Redo (Ctrl+Shift+Z)"
+                                style={{ opacity: canRedo ? 1 : 0.3, cursor: canRedo ? 'pointer' : 'not-allowed' }}
+                            >
+                                <Redo2 size={14} />
+                            </button>
 
                             <div className={`status-badge ${hasApiKey ? 'online' : 'offline'}`}>
                                 {hasApiKey ? <ShieldCheck size={12} /> : <AlertCircle size={12} />}

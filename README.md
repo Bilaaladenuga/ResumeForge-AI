@@ -1,8 +1,8 @@
-# ResumeForge AI
+# ResuCraft
 
-ResumeForge AI is an AI-powered resume builder for creating polished, ATS-friendly resumes with industry-specific templates and Google Gemini content assistance.
+ResuCraft is an AI-powered resume builder for creating polished, ATS-friendly resumes with industry-specific templates and Google Gemini content assistance.
 
-![ResumeForge AI landing page](screenshots/landing-page.png)
+![ResuCraft landing page](screenshots/landing-page.png)
 
 The project was migrated from Vite to Next.js and now uses the Next App Router for the main pages:
 
@@ -20,27 +20,35 @@ The project was migrated from Vite to Next.js and now uses the Next App Router f
 - AI skills enhancement
 - ATS compatibility analysis
 - Cover letter generation
+- Resume scoring & grading (keyword-matching, no AI needed)
+- Spell and grammar checker (fully offline)
+- Multiple resume management (create, switch, rename, duplicate)
+- Section-by-section AI rewrite with writing style selection
+- Writing styles: Professional, Casual, Academic
+- LinkedIn profile import to auto-fill resume data
 - Five resume templates: Tech, Finance, Healthcare, Creative, and General
 - Live resume preview while editing
 - Profile photo upload
 - Print/PDF export through the browser print flow
+- CSV-based PDF export with download
 - Responsive dark glass-style interface
+- Auto-save with debounce
 
 ## Interface Preview
 
 ### Template Selector
 
-![ResumeForge template selector](screenshots/template-selector.png)
+![ResuCraft template selector](screenshots/template-selector.png)
 
 ### Resume Builder
 
-![ResumeForge tech resume builder](screenshots/builder-tech.png)
+![ResuCraft tech resume builder](screenshots/builder-tech.png)
 
 ### Template Examples
 
-![ResumeForge healthcare resume template](screenshots/builder-healthcare.png)
+![ResuCraft healthcare resume template](screenshots/builder-healthcare.png)
 
-![ResumeForge creative resume template](screenshots/builder-creative.png)
+![ResuCraft creative resume template](screenshots/builder-creative.png)
 
 ## Tech Stack
 
@@ -92,7 +100,7 @@ npm.cmd run dev
 
 Ollama local is labeled experimental because it requires a capable device and a local Ollama server.
 
-If the selected provider fails because of quota, rate limits, or key issues, ResumeForge falls back to built-in resume-writing templates for summaries and bullet improvements.
+If the selected provider fails because of quota, rate limits, or key issues, ResuCraft falls back to built-in resume-writing templates for summaries and bullet improvements.
 
 Provider credentials are stored in the browser's local storage and are used directly by the client.
 
@@ -121,30 +129,45 @@ ResumeForge-AI/
   client/
     src/
       app/
-        page.jsx
-        templates/page.jsx
-        builder/[templateId]/page.jsx
-        layout.jsx
+        page.tsx
+        templates/page.tsx
+        builder/[templateId]/page.tsx
+        layout.tsx
         globals.css
       components/
-        LandingPage.jsx
-        TemplateSelector.jsx
-        ResumeBuilder.jsx
-        ResumeForm.jsx
-        ResumePreview.jsx
-        AIPanel.jsx
-        SettingsModal.jsx
+        LandingPage.tsx
+        TemplateSelector.tsx
+        ResumeBuilder.tsx
+        ResumeForm.tsx
+        ResumePreview.tsx
+        AIPanel.tsx
+        SettingsModal.tsx
+        ResumeManager.tsx
+        SpellCheckModal.tsx
+        ResumeScoreModal.tsx
+        PDFExport.tsx
+        LinkedInImportModal.tsx
       services/
-        ai.js
+        ai.ts
+        storage.ts
+        prompts.ts
+        validation.ts
+        spellcheckService.ts
+        linkedinParser.ts
       styles/
         templates.css
       templates/
-        TechTemplate.jsx
-        FinanceTemplate.jsx
-        HealthcareTemplate.jsx
-        CreativeTemplate.jsx
-        GeneralTemplate.jsx
-        index.js
+        TechTemplate.tsx
+        FinanceTemplate.tsx
+        HealthcareTemplate.tsx
+        CreativeTemplate.tsx
+        GeneralTemplate.tsx
+        LegalTemplate.tsx
+        EducationTemplate.tsx
+        index.ts
+      types/
+        index.ts
+        modules.d.ts
     public/
     package.json
     next.config.mjs

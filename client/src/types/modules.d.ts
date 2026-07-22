@@ -63,4 +63,6 @@ declare module 'lucide-react' {
     export const TrendingUp: Icon;
     export const Files: Icon;
     export const Edit3: Icon;
+    export const Undo2: Icon;
+    export const Redo2: Icon;
 }

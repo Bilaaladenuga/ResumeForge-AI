@@ -2,7 +2,7 @@ import './globals.css';
 import React from 'react';
 
 export const metadata = {
-    title: 'ResumeForge AI',
+    title: 'ResuCraft',
     description: 'AI-Powered Career Strategist',
 };
 

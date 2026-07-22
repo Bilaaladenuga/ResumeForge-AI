@@ -48,14 +48,14 @@ const AIPanel = ({ formData, setFormData, industry, onOpenSettings }: AIPanelPro
         const message = (err as Error)?.message || '';
 
         if (message.includes('429') || message.toLowerCase().includes('quota')) {
-            return `${providerConfig.label} could not generate this because the provider quota or rate limit was reached. ResumeForge used a built-in fallback where available.`;
+            return `${providerConfig.label} could not generate this because the provider quota or rate limit was reached. ResuCraft used a built-in fallback where available.`;
         }
 
         if (message.toLowerCase().includes('api key') || message.includes('403') || message.includes('401')) {
-            return `${providerConfig.label} could not generate this. Please check that the provider settings are valid. ResumeForge used a built-in fallback where available.`;
+            return `${providerConfig.label} could not generate this. Please check that the provider settings are valid. ResuCraft used a built-in fallback where available.`;
         }
 
-        return 'AI generation failed. ResumeForge used a built-in fallback where available.';
+        return 'AI generation failed. ResuCraft used a built-in fallback where available.';
     };
 
     const handleAIError = (label: string, err: unknown) => {

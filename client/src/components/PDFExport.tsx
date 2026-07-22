@@ -281,7 +281,7 @@ const PDFDocument: React.FC<{ data: FormData }> = ({ data }) => {
 
                 {/* Footer */}
                 <Text style={{ fontSize: 7, color: colors.muted, textAlign: 'center', marginTop: 20 }}>
-                    Generated with ResumeForge AI
+                    Generated with ResuCraft
                 </Text>
             </Page>
         </Document>
