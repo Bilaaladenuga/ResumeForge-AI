@@ -1,0 +1,68 @@
+declare module 'lucide-react' {
+    import { FC, SVGProps } from 'react';
+
+    type IconProps = SVGProps<SVGSVGElement> & {
+        size?: number | string;
+        color?: string;
+        strokeWidth?: number | string;
+        absoluteStrokeWidth?: boolean;
+    };
+
+    type Icon = FC<IconProps>;
+
+    export const Sparkles: Icon;
+    export const Zap: Icon;
+    export const FileText: Icon;
+    export const ArrowRight: Icon;
+    export const Layout: Icon;
+    export const Cpu: Icon;
+    export const CheckCircle: Icon;
+    export const Search: Icon;
+    export const BarChart: Icon;
+    export const ShieldCheck: Icon;
+    export const Globe: Icon;
+    export const ChevronRight: Icon;
+    export const Award: Icon;
+    export const User: Icon;
+    export const Briefcase: Icon;
+    export const GraduationCap: Icon;
+    export const FolderKanban: Icon;
+    export const Wrench: Icon;
+    export const ChevronDown: Icon;
+    export const ChevronUp: Icon;
+    export const Plus: Icon;
+    export const X: Icon;
+    export const Image: Icon;
+    export const AlertCircle: Icon;
+    export const Check: Icon;
+    export const Code: Icon;
+    export const DollarSign: Icon;
+    export const Heart: Icon;
+    export const Palette: Icon;
+    export const Settings: Icon;
+    export const Download: Icon;
+    export const ArrowLeft: Icon;
+    export const Save: Icon;
+    export const Upload: Icon;
+    export const Trash2: Icon;
+    export const Key: Icon;
+    export const ExternalLink: Icon;
+    export const Target: Icon;
+    export const Wand2: Icon;
+    export const Activity: Icon;
+    export const Copy: Icon;
+    export const Scale: Icon;
+    export const BookOpen: Icon;
+    export const Pen: Icon;
+    export const MessageSquare: Icon;
+    export const Linkedin: Icon;
+    export const Loader2: Icon;
+    export const Eye: Icon;
+    export const EyeOff: Icon;
+    export const AlertTriangle: Icon;
+    export const TrendingUp: Icon;
+    export const Files: Icon;
+    export const Edit3: Icon;
+    export const Undo2: Icon;
+    export const Redo2: Icon;
+}
