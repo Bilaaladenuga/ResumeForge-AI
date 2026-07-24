@@ -492,11 +492,19 @@ const ResumeBuilder = () => {
                                 <Redo2 size={13} />
                             </button>
 
-                            {/* AI Status (ALWAYS VISIBLE) */}
+                            {/* AI Status + Settings (ALWAYS VISIBLE) */}
                             <div className={`status-badge ${hasApiKey ? 'online' : 'offline'}`} style={{ flexShrink: 0, fontSize: '0.6rem', padding: '0.2rem 0.5rem' }}>
                                 {hasApiKey ? <ShieldCheck size={10} /> : <AlertCircle size={10} />}
                                 <span style={{ fontSize: '0.6rem' }}>{hasApiKey ? 'Ready' : 'Offline'}</span>
                             </div>
+                            <button
+                                className="btn btn-ghost btn-sm"
+                                onClick={() => setShowSettings(true)}
+                                title="Configure AI settings"
+                                style={{ padding: '0.35rem', flexShrink: 0, color: 'var(--secondary)' }}
+                            >
+                                <Settings size={14} />
+                            </button>
 
                             {/* Export buttons (ALWAYS VISIBLE) */}
                             <PDFExportButton formData={formData} templateName={template.name} />
@@ -537,11 +545,6 @@ const ResumeBuilder = () => {
                                         overflow: 'hidden',
                                         padding: '4px'
                                     }}>
-                                                        <button className="btn btn-ghost btn-sm"
-                                                            onClick={() => { setShowMoreMenu(false); setShowSettings(true); }}
-                                                            style={{ justifyContent: 'flex-start', width: '100%', fontSize: '0.75rem', padding: '0.4rem 0.6rem' }}>
-                                                            <Settings size={13} /> Settings
-                                                        </button>
                                                         <button className="btn btn-ghost btn-sm"
                                                             onClick={() => { setShowMoreMenu(false); router.push('/templates'); }}
                                                             style={{ justifyContent: 'flex-start', width: '100%', fontSize: '0.75rem', padding: '0.4rem 0.6rem' }}>
