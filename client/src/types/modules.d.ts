@@ -62,6 +62,14 @@ declare module 'lucide-react' {
     export const AlertTriangle: Icon;
     export const TrendingUp: Icon;
     export const Files: Icon;
+    export const BookmarkPlus: Icon;
+    export const Briefcase: Icon;
+    export const Clock: Icon;
+    export const Calendar: Icon;
+    export const Building: Icon;
+    export const Search: Icon;
+    export const ExternalLink: Icon;
+    export const MoreHorizontal: Icon;
     export const Edit3: Icon;
     export const Undo2: Icon;
     export const Redo2: Icon;

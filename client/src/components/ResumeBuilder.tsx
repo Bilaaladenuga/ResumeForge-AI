@@ -1,13 +1,14 @@
 'use client';
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
-import { Sparkles, Settings, Download, ArrowLeft, ShieldCheck, AlertCircle, Save, Upload, Trash2, Linkedin, TrendingUp, Files, ChevronDown, Plus, Edit3, Copy, Check, BookOpen, Undo2, Redo2 } from 'lucide-react';
+import { Sparkles, Settings, Download, ArrowLeft, ShieldCheck, AlertCircle, Save, Upload, Trash2, Linkedin, TrendingUp, Files, ChevronDown, Plus, Edit3, Copy, Check, BookOpen, Undo2, Redo2, MoreHorizontal } from 'lucide-react';
 import ResumeForm from './ResumeForm';
 import ResumePreview from './ResumePreview';
 import AIPanel from './AIPanel';
 import SettingsModal from './SettingsModal';
 import LinkedInImportModal from './LinkedInImportModal';
 import PDFExportButton from './PDFExport';
+import DOCXExportButton from './DOCXExport';
 import ResumeScoreModal from './ResumeScoreModal';
 import ResumeManager from './ResumeManager';
 import SpellCheckModal from './SpellCheckModal';
@@ -71,12 +72,14 @@ const ResumeBuilder = () => {
     const [showScoreModal, setShowScoreModal] = useState(false);
     const [showSpellCheck, setShowSpellCheck] = useState(false);
     const [showResumeDropdown, setShowResumeDropdown] = useState(false);
+    const [showMoreMenu, setShowMoreMenu] = useState(false);
     const [resumeList, setResumeList] = useState<ResumeMeta[]>([]);
     const [isRenaming, setIsRenaming] = useState(false);
     const [renameValue, setRenameValue] = useState('');
     const fileInputRef = useRef<HTMLInputElement>(null);
     const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const dropdownRef = useRef<HTMLDivElement>(null);
+    const moreMenuRef = useRef<HTMLDivElement>(null);
 
     const hasApiKey = checkApiKey();
 
@@ -149,11 +152,14 @@ const ResumeBuilder = () => {
         return () => window.removeEventListener('keydown', handleKeyDown);
     }, [undo, redo]);
 
-    // Close dropdown on outside click
+    // Close dropdowns on outside click
     useEffect(() => {
         const handleClick = (e: MouseEvent) => {
             if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
                 setShowResumeDropdown(false);
+            }
+            if (moreMenuRef.current && !moreMenuRef.current.contains(e.target as Node)) {
+                setShowMoreMenu(false);
             }
         };
         document.addEventListener('mousedown', handleClick);
@@ -321,28 +327,30 @@ const ResumeBuilder = () => {
                             <span className="navbar-brand-text gradient-text">ResuCraft</span>
                         </div>
 
-                        <div className="navbar-actions">
-                            {/* Resume selector dropdown */}
-                            <div ref={dropdownRef} style={{ position: 'relative' }}>
+                        <div className="navbar-actions" style={{ gap: '6px' }}>
+                            {/* Resume selector dropdown (ALWAYS VISIBLE) */}
+                            <div ref={dropdownRef} style={{ position: 'relative', flexShrink: 0 }}>
                                 <button
                                     className="btn btn-ghost btn-sm"
                                     onClick={() => { refreshResumeList(); setShowResumeDropdown(!showResumeDropdown); }}
                                     title="Switch resume"
                                     style={{
-                                        maxWidth: '200px',
+                                        maxWidth: '160px',
                                         overflow: 'hidden',
                                         textOverflow: 'ellipsis',
                                         whiteSpace: 'nowrap',
                                         display: 'flex',
                                         alignItems: 'center',
-                                        gap: '6px'
+                                        gap: '4px',
+                                        fontSize: '0.7rem',
+                                        padding: '0.35rem 0.6rem'
                                     }}
                                 >
-                                    <Files size={14} />
-                                    <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '120px' }}>
+                                    <Files size={13} />
+                                    <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '90px' }}>
                                         {currentResumeName || `${template.name} Draft`}
                                     </span>
-                                    <ChevronDown size={12} />
+                                    <ChevronDown size={10} />
                                 </button>
 
                                 {showResumeDropdown && (
@@ -351,7 +359,7 @@ const ResumeBuilder = () => {
                                         top: '100%',
                                         left: 0,
                                         marginTop: '4px',
-                                        minWidth: '280px',
+                                        minWidth: '260px',
                                         background: 'var(--surface)',
                                         border: '1px solid var(--border)',
                                         borderRadius: 'var(--radius-sm)',
@@ -359,7 +367,6 @@ const ResumeBuilder = () => {
                                         zIndex: 100,
                                         overflow: 'hidden'
                                     }}>
-                                        {/* Current resume header */}
                                         {currentResumeId && (
                                             <div style={{
                                                 padding: '0.5rem 0.75rem',
@@ -405,8 +412,6 @@ const ResumeBuilder = () => {
                                                 )}
                                             </div>
                                         )}
-
-                                        {/* Resume list */}
                                         <div style={{ maxHeight: '200px', overflowY: 'auto' }}>
                                             {resumeList.length === 0 ? (
                                                 <div style={{ padding: '1rem 0.75rem', fontSize: '0.75rem', color: 'var(--text-dim)', textAlign: 'center' }}>
@@ -441,27 +446,15 @@ const ResumeBuilder = () => {
                                                 ))
                                             )}
                                         </div>
-
-                                        {/* Action buttons */}
                                         <div style={{
                                             padding: '0.5rem 0.75rem',
                                             borderTop: '1px solid var(--border)',
-                                            display: 'flex',
-                                            flexDirection: 'column',
-                                            gap: '4px'
+                                            display: 'flex', flexDirection: 'column', gap: '4px'
                                         }}>
-                                            <button
-                                                className="btn btn-ghost btn-sm"
-                                                onClick={handleCreateNewInBuilder}
-                                                style={{ justifyContent: 'flex-start', width: '100%' }}
-                                            >
+                                            <button className="btn btn-ghost btn-sm" onClick={handleCreateNewInBuilder} style={{ justifyContent: 'flex-start', width: '100%' }}>
                                                 <Plus size={12} /> New Resume
                                             </button>
-                                            <button
-                                                className="btn btn-ghost btn-sm"
-                                                onClick={() => { setShowResumeDropdown(false); setShowResumeManager(true); }}
-                                                style={{ justifyContent: 'flex-start', width: '100%' }}
-                                            >
+                                            <button className="btn btn-ghost btn-sm" onClick={() => { setShowResumeDropdown(false); setShowResumeManager(true); }} style={{ justifyContent: 'flex-start', width: '100%' }}>
                                                 <Files size={12} /> Manage All Resumes
                                             </button>
                                         </div>
@@ -469,136 +462,131 @@ const ResumeBuilder = () => {
                                 )}
                             </div>
 
-                            {/* Save status indicator */}
+                            {/* Save status (auto-shown) */}
                             {savedStatus && (
                                 <span style={{
-                                    fontSize: '0.65rem',
+                                    fontSize: '0.6rem',
                                     color: savedStatus === 'saved' ? 'var(--success)' :
                                            savedStatus === 'saving' ? 'var(--text-muted)' :
                                            savedStatus === 'error' ? 'var(--danger)' : 'var(--text-dim)',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '4px',
-                                    padding: '0.25rem 0.5rem',
+                                    display: 'flex', alignItems: 'center', gap: '3px',
+                                    padding: '0.2rem 0.4rem',
                                     background: savedStatus === 'saved' ? 'rgba(16, 185, 129, 0.1)' : 'transparent',
-                                    borderRadius: '4px'
+                                    borderRadius: '4px', flexShrink: 0
                                 }}>
-                                    <Save size={10} />
+                                    <Save size={9} />
                                     {savedStatus === 'saving' ? 'Saving...' :
-                                     savedStatus === 'saved' ? 'Saved' :
-                                     'Save failed'}
+                                     savedStatus === 'saved' ? 'Saved' : 'Failed'}
                                 </span>
                             )}
 
-                            {/* Undo / Redo */}
-                            <button
-                                className="btn btn-ghost btn-sm"
-                                onClick={undo}
-                                disabled={!canUndo}
+                            {/* Undo / Redo (ALWAYS VISIBLE) */}
+                            <button className="btn btn-ghost btn-sm" onClick={undo} disabled={!canUndo}
                                 title="Undo (Ctrl+Z)"
-                                style={{ opacity: canUndo ? 1 : 0.3, cursor: canUndo ? 'pointer' : 'not-allowed' }}
-                            >
-                                <Undo2 size={14} />
+                                style={{ opacity: canUndo ? 1 : 0.3, cursor: canUndo ? 'pointer' : 'not-allowed', padding: '0.35rem', flexShrink: 0 }}>
+                                <Undo2 size={13} />
                             </button>
-                            <button
-                                className="btn btn-ghost btn-sm"
-                                onClick={redo}
-                                disabled={!canRedo}
+                            <button className="btn btn-ghost btn-sm" onClick={redo} disabled={!canRedo}
                                 title="Redo (Ctrl+Shift+Z)"
-                                style={{ opacity: canRedo ? 1 : 0.3, cursor: canRedo ? 'pointer' : 'not-allowed' }}
-                            >
-                                <Redo2 size={14} />
+                                style={{ opacity: canRedo ? 1 : 0.3, cursor: canRedo ? 'pointer' : 'not-allowed', padding: '0.35rem', flexShrink: 0 }}>
+                                <Redo2 size={13} />
                             </button>
 
-                            <div className={`status-badge ${hasApiKey ? 'online' : 'offline'}`}>
-                                {hasApiKey ? <ShieldCheck size={12} /> : <AlertCircle size={12} />}
-                                <span>AI {hasApiKey ? 'Ready' : 'Offline'}</span>
+                            {/* AI Status (ALWAYS VISIBLE) */}
+                            <div className={`status-badge ${hasApiKey ? 'online' : 'offline'}`} style={{ flexShrink: 0, fontSize: '0.6rem', padding: '0.2rem 0.5rem' }}>
+                                {hasApiKey ? <ShieldCheck size={10} /> : <AlertCircle size={10} />}
+                                <span style={{ fontSize: '0.6rem' }}>{hasApiKey ? 'Ready' : 'Offline'}</span>
                             </div>
 
-                            <button className="btn btn-ghost btn-sm" onClick={() => setShowSettings(true)}>
-                                <Settings size={14} /> {hasApiKey ? 'Settings' : 'Configure AI'}
-                            </button>
+                            {/* Export buttons (ALWAYS VISIBLE) */}
+                            <PDFExportButton formData={formData} templateName={template.name} />
+                            <DOCXExportButton formData={formData} templateName={template.name} />
 
-                            <button className="btn btn-ghost btn-sm" onClick={() => router.push('/templates')}>
-                                <ArrowLeft size={14} /> Templates
-                            </button>
+                            {/* Hidden file input for JSON import */}
+                            <input
+                                ref={fileInputRef}
+                                type="file"
+                                accept=".json"
+                                onChange={handleImportJSON}
+                                style={{ display: 'none' }}
+                            />
 
-                            {/* LinkedIn Import */}
-                            <button
-                                className="btn btn-ghost btn-sm"
-                                onClick={() => setShowLinkedInModal(true)}
-                                title="Import from LinkedIn profile"
-                                style={{ color: '#0a66c2' }}
-                            >
-                                <Linkedin size={14} /> LinkedIn
-                            </button>
-
-                            {/* Import JSON */}
-                            <div style={{ position: 'relative' }}>
-                                <input
-                                    ref={fileInputRef}
-                                    type="file"
-                                    accept=".json"
-                                    onChange={handleImportJSON}
-                                    style={{ display: 'none' }}
-                                    id="json-import-input"
-                                />
+                            {/* ⚡ MORE DROPDOWN (collapsible secondary actions) */}
+                            <div ref={moreMenuRef} style={{ position: 'relative', flexShrink: 0 }}>
                                 <button
                                     className="btn btn-ghost btn-sm"
-                                    onClick={() => fileInputRef.current?.click()}
-                                    title="Import resume from JSON file"
+                                    onClick={() => setShowMoreMenu(!showMoreMenu)}
+                                    title="More actions"
+                                    style={{ padding: '0.35rem 0.5rem' }}
                                 >
-                                    <Upload size={14} /> Import
+                                    <MoreHorizontal size={16} />
                                 </button>
+
+                                {showMoreMenu && (
+                                    <div style={{
+                                        position: 'absolute',
+                                        top: '100%',
+                                        right: 0,
+                                        marginTop: '4px',
+                                        minWidth: '200px',
+                                        background: '#111827',
+                                        border: '1px solid rgba(245, 158, 11, 0.15)',
+                                        borderRadius: 'var(--radius-sm)',
+                                        boxShadow: '0 12px 40px rgba(0,0,0,0.5)',
+                                        zIndex: 200,
+                                        overflow: 'hidden',
+                                        padding: '4px'
+                                    }}>
+                                                        <button className="btn btn-ghost btn-sm"
+                                                            onClick={() => { setShowMoreMenu(false); setShowSettings(true); }}
+                                                            style={{ justifyContent: 'flex-start', width: '100%', fontSize: '0.75rem', padding: '0.4rem 0.6rem' }}>
+                                                            <Settings size={13} /> Settings
+                                                        </button>
+                                                        <button className="btn btn-ghost btn-sm"
+                                                            onClick={() => { setShowMoreMenu(false); router.push('/templates'); }}
+                                                            style={{ justifyContent: 'flex-start', width: '100%', fontSize: '0.75rem', padding: '0.4rem 0.6rem' }}>
+                                                            <ArrowLeft size={13} /> Templates
+                                                        </button>
+                                                        <button className="btn btn-ghost btn-sm"
+                                                            onClick={() => { setShowMoreMenu(false); setShowLinkedInModal(true); }}
+                                                            style={{ justifyContent: 'flex-start', width: '100%', fontSize: '0.75rem', padding: '0.4rem 0.6rem', color: '#0a66c2' }}>
+                                                            <Linkedin size={13} /> LinkedIn Import
+                                                        </button>
+                                                        <button className="btn btn-ghost btn-sm"
+                                                            onClick={() => { setShowMoreMenu(false); fileInputRef.current?.click(); }}
+                                                            style={{ justifyContent: 'flex-start', width: '100%', fontSize: '0.75rem', padding: '0.4rem 0.6rem' }}>
+                                                            <Upload size={13} /> Import JSON
+                                                        </button>
+                                                        <button className="btn btn-ghost btn-sm"
+                                                            onClick={() => { setShowMoreMenu(false); handleExportJSON(); }}
+                                                            style={{ justifyContent: 'flex-start', width: '100%', fontSize: '0.75rem', padding: '0.4rem 0.6rem' }}>
+                                                            <Save size={13} /> Export JSON
+                                                        </button>
+                                                        <div style={{ height: '1px', background: 'rgba(255,255,255,0.06)', margin: '2px 0' }} />
+                                                        <button className="btn btn-ghost btn-sm"
+                                                            onClick={() => { setShowMoreMenu(false); handleValidateAll(); }}
+                                                            style={{ justifyContent: 'flex-start', width: '100%', fontSize: '0.75rem', padding: '0.4rem 0.6rem' }}>
+                                                            <ShieldCheck size={13} /> Validate
+                                                        </button>
+                                                        <button className="btn btn-ghost btn-sm"
+                                                            onClick={() => { setShowMoreMenu(false); setShowSpellCheck(true); }}
+                                                            style={{ justifyContent: 'flex-start', width: '100%', fontSize: '0.75rem', padding: '0.4rem 0.6rem' }}>
+                                                            <BookOpen size={13} /> Spell Check
+                                                        </button>
+                                                        <button className="btn btn-ghost btn-sm"
+                                                            onClick={() => { setShowMoreMenu(false); setShowScoreModal(true); }}
+                                                            style={{ justifyContent: 'flex-start', width: '100%', fontSize: '0.75rem', padding: '0.4rem 0.6rem' }}>
+                                                            <TrendingUp size={13} /> Score
+                                                        </button>
+                                                        <div style={{ height: '1px', background: 'rgba(255,255,255,0.06)', margin: '2px 0' }} />
+                                                        <button className="btn btn-ghost btn-sm"
+                                                            onClick={() => { setShowMoreMenu(false); handleClearDraft(); }}
+                                                            style={{ justifyContent: 'flex-start', width: '100%', fontSize: '0.75rem', padding: '0.4rem 0.6rem', color: 'var(--danger)' }}>
+                                                            <Trash2 size={13} /> Clear Resume
+                                                        </button>
+                                    </div>
+                                )}
                             </div>
-
-                            {/* Export JSON */}
-                            <button
-                                className="btn btn-ghost btn-sm"
-                                onClick={handleExportJSON}
-                                title="Export resume as JSON file"
-                            >
-                                <Save size={14} /> Save
-                            </button>
-
-                            {/* Clear draft */}
-                            <button
-                                className="btn btn-ghost btn-sm"
-                                onClick={handleClearDraft}
-                                title="Clear resume data and reset form"
-                                style={{ color: 'var(--danger)' }}
-                            >
-                                <Trash2 size={14} />
-                            </button>
-
-                            {/* Spell & Grammar Check */}
-                            <button
-                                className="btn btn-sm btn-secondary"
-                                onClick={() => setShowSpellCheck(true)}
-                                title="Check spelling and grammar"
-                            >
-                                <BookOpen size={14} /> Check
-                            </button>
-
-                            {/* Score Resume */}
-                            <button
-                                className="btn btn-sm btn-secondary"
-                                onClick={() => setShowScoreModal(true)}
-                                title="Score your resume quality"
-                            >
-                                <TrendingUp size={14} /> Score
-                            </button>
-
-                            {/* Validate */}
-                            <button
-                                className={`btn btn-sm ${hasErrors(errors) && Object.keys(touched).length > 0 ? 'btn-danger' : 'btn-secondary'}`}
-                                onClick={handleValidateAll}
-                                title="Validate all form fields"
-                            >
-                                <ShieldCheck size={14} /> Validate
-                            </button>
-
-                            <PDFExportButton formData={formData} templateName={template.name} />
                         </div>
                     </div>
                 </div>

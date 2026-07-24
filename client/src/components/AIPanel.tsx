@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import { Cpu, Sparkles, Target, Wand2, Wrench, FileText, Activity, Copy, Check } from 'lucide-react';
+import { Cpu, Sparkles, Target, Wand2, Wrench, FileText, Activity, Copy, Check, BookmarkPlus, Briefcase } from 'lucide-react';
 import { FormData, ATSData, LoadingState, WritingStyle, WRITING_STYLES } from '../types';
 import { getSavedStyle, saveStyle } from '../services/prompts';
+import { createJD } from '../services/storage';
+import JDRepositoryModal from './JDRepositoryModal';
 import {
     generateSummary,
     tailorSummary,
@@ -39,6 +41,8 @@ const AIPanel = ({ formData, setFormData, industry, onOpenSettings }: AIPanelPro
     const [coverLetter, setCoverLetter] = useState('');
     const [atsData, setAtsData] = useState<ATSData | null>(null);
     const [copied, setCopied] = useState(false);
+    const [showJDRepo, setShowJDRepo] = useState(false);
+    const [jdSaved, setJdSaved] = useState(false);
 
     const [writingStyle, setWritingStyle] = useState<WritingStyle>(getSavedStyle());
     const hasApiKey = checkApiKey();
@@ -357,6 +361,18 @@ const AIPanel = ({ formData, setFormData, industry, onOpenSettings }: AIPanelPro
         }
     };
 
+    const handleSaveJD = () => {
+        if (!jobDescription.trim()) return;
+        const title = jobDescription.split('\n')[0].trim().substring(0, 80) || 'Untitled Position';
+        createJD(title, formData.designation || '', jobDescription);
+        setJdSaved(true);
+        setTimeout(() => setJdSaved(false), 2000);
+    };
+
+    const handleLoadJD = (jd: { id: string; title: string; company: string; content: string }) => {
+        setJobDescription(jd.content);
+    };
+
     const copyToClipboard = () => {
         navigator.clipboard.writeText(coverLetter);
         setCopied(true);
@@ -465,24 +481,50 @@ const AIPanel = ({ formData, setFormData, industry, onOpenSettings }: AIPanelPro
                 </button>
             </div>
 
-            {/* Resume Tailor */}
+            {/* Resume Tailor + JD Repository */}
             <div className="ai-feature">
-                <h4><Target size={14} /> Resume Tailor</h4>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                    <h4 style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><Target size={14} /> Job Description</h4>
+                    <div style={{ display: 'flex', gap: '4px' }}>
+                        {/* Save current JD */}
+                        <button
+                            className="btn btn-ghost btn-sm"
+                            onClick={handleSaveJD}
+                            disabled={!jobDescription.trim()}
+                            title="Save this job description"
+                            style={{ fontSize: '0.6rem', padding: '0.2rem 0.5rem', color: jdSaved ? 'var(--success)' : 'var(--text-dim)' }}
+                        >
+                            <BookmarkPlus size={12} />
+                            {jdSaved ? 'Saved!' : 'Save'}
+                        </button>
+                        {/* Open JD repository */}
+                        <button
+                            className="btn btn-ghost btn-sm"
+                            onClick={() => setShowJDRepo(true)}
+                            title="Browse saved job descriptions"
+                            style={{ fontSize: '0.6rem', padding: '0.2rem 0.5rem' }}
+                        >
+                            <Briefcase size={12} /> Saved
+                        </button>
+                    </div>
+                </div>
                 <textarea
                     className="form-input"
-                    placeholder="Paste a job description to tailor your summary..."
+                    placeholder="Paste a job description to tailor your resume, check ATS compatibility, or generate a cover letter..."
                     value={jobDescription}
                     onChange={(e) => setJobDescription(e.target.value)}
                     style={{ minHeight: '80px', fontSize: '0.8rem', marginBottom: '0.5rem' }}
                 />
-                <button
-                    className="btn btn-sm btn-secondary"
-                    onClick={handleTailor}
-                    disabled={loading.tailor || !jobDescription.trim() || !formData.summary}
-                    style={{ width: '100%' }}
-                >
-                    {loading.tailor ? 'Tailoring...' : 'Tailor Summary'}
-                </button>
+                <div style={{ display: 'flex', gap: '0.4rem' }}>
+                    <button
+                        className="btn btn-sm btn-secondary"
+                        onClick={handleTailor}
+                        disabled={loading.tailor || !jobDescription.trim() || !formData.summary}
+                        style={{ flex: 1 }}
+                    >
+                        {loading.tailor ? 'Tailoring...' : 'Tailor Summary'}
+                    </button>
+                </div>
             </div>
 
             {/* Bullet Power-Up */}
@@ -626,6 +668,13 @@ const AIPanel = ({ formData, setFormData, industry, onOpenSettings }: AIPanelPro
                     </div>
                 )}
             </div>
+
+            {/* JD Repository Modal */}
+            <JDRepositoryModal
+                isOpen={showJDRepo}
+                onClose={() => setShowJDRepo(false)}
+                onSelect={handleLoadJD}
+            />
         </div>
     );
 };

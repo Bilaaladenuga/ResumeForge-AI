@@ -1,4 +1,4 @@
-import { FormData, StoredDraft, StoredResume, ResumeMeta, ExportedResume } from '../types';
+import { FormData, StoredDraft, StoredResume, ResumeMeta, ExportedResume, SavedJD } from '../types';
 
 const STORAGE_PREFIX = 'resucraft_';
 const OLD_PREFIX = 'resumeforge_';
@@ -370,6 +370,82 @@ export function setActiveResumeId(id: string | null): void {
     } catch {
         // Silently fail
     }
+}
+
+// ─── JD Repository ───
+
+const JD_INDEX_KEY = `${STORAGE_PREFIX}jd_index`;
+const JD_KEY = (id: string): string => `${STORAGE_PREFIX}jd_${id}`;
+
+export function getJDIndex(): SavedJD[] {
+    try {
+        const raw = localStorage.getItem(JD_INDEX_KEY);
+        return raw ? JSON.parse(raw) : [];
+    } catch {
+        return [];
+    }
+}
+
+function saveJDIndex(index: SavedJD[]): void {
+    try {
+        localStorage.setItem(JD_INDEX_KEY, JSON.stringify(index));
+    } catch (err) {
+        console.error('Failed to save JD index:', err);
+    }
+}
+
+export function saveJD(jd: SavedJD): boolean {
+    try {
+        const key = JD_KEY(jd.id);
+        localStorage.setItem(key, JSON.stringify(jd));
+        const index = getJDIndex();
+        const existingIdx = index.findIndex(j => j.id === jd.id);
+        const entry = { ...jd, updatedAt: new Date().toISOString() };
+        if (existingIdx !== -1) {
+            index[existingIdx] = entry;
+        } else {
+            index.push(entry);
+        }
+        saveJDIndex(index);
+        return true;
+    } catch (err) {
+        console.error('Failed to save JD:', err);
+        return false;
+    }
+}
+
+export function getJDById(id: string): SavedJD | null {
+    try {
+        const raw = localStorage.getItem(JD_KEY(id));
+        return raw ? JSON.parse(raw) : null;
+    } catch {
+        return null;
+    }
+}
+
+export function deleteJD(id: string): void {
+    try {
+        localStorage.removeItem(JD_KEY(id));
+        const index = getJDIndex().filter(j => j.id !== id);
+        saveJDIndex(index);
+    } catch (err) {
+        console.error('Failed to delete JD:', err);
+    }
+}
+
+export function createJD(title: string, company: string, content: string, url: string = ''): SavedJD {
+    const now = new Date().toISOString();
+    const jd: SavedJD = {
+        id: generateId(),
+        title,
+        company,
+        content,
+        url,
+        createdAt: now,
+        updatedAt: now
+    };
+    saveJD(jd);
+    return jd;
 }
 
 
