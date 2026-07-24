@@ -177,3 +177,50 @@ export interface SavedJD {
     createdAt: string;
     updatedAt: string;
 }
+
+export interface TemplateCustomization {
+    primaryColor: string;
+    secondaryColor: string;
+    fontFamily: string;
+    fontSize: 'small' | 'medium' | 'large';
+    spacing: 'compact' | 'normal' | 'spacious';
+}
+
+export const DEFAULT_CUSTOMIZATION: TemplateCustomization = {
+    primaryColor: '',
+    secondaryColor: '',
+    fontFamily: '',
+    fontSize: 'medium',
+    spacing: 'normal'
+};
+
+export const FONT_OPTIONS = [
+    { value: '', label: 'Template Default' },
+    { value: 'Inter, sans-serif', label: 'Inter' },
+    { value: 'Georgia, "Times New Roman", serif', label: 'Georgia' },
+    { value: '"Segoe UI", Tahoma, sans-serif', label: 'Segoe UI' },
+    { value: '"Open Sans", sans-serif', label: 'Open Sans' },
+    { value: '"Playfair Display", serif', label: 'Playfair Display' },
+    { value: '"Roboto", sans-serif', label: 'Roboto' },
+    { value: '"Merriweather", serif', label: 'Merriweather' },
+    { value: '"Montserrat", sans-serif', label: 'Montserrat' },
+    { value: '"Lora", serif', label: 'Lora' },
+    { value: '"Fira Code", monospace', label: 'Fira Code (Monospace)' },
+    { value: '"Nunito", sans-serif', label: 'Nunito' },
+    { value: '"Poppins", sans-serif', label: 'Poppins' },
+];
+
+export const COLOR_PRESETS = [
+    { name: 'Ocean Blue', primary: '#3b82f6', secondary: '#06b6d4' },
+    { name: 'Emerald', primary: '#10b981', secondary: '#34d399' },
+    { name: 'Royal Purple', primary: '#7c3aed', secondary: '#c026d3' },
+    { name: 'Crimson', primary: '#dc2626', secondary: '#f43f5e' },
+    { name: 'Amber', primary: '#f59e0b', secondary: '#d97706' },
+    { name: 'Teal', primary: '#0d9488', secondary: '#14b8a6' },
+    { name: 'Indigo', primary: '#6366f1', secondary: '#818cf8' },
+    { name: 'Rose', primary: '#e11d48', secondary: '#fb7185' },
+    { name: 'Gold', primary: '#b8860b', secondary: '#d4af37' },
+    { name: 'Slate', primary: '#1e293b', secondary: '#475569' },
+    { name: 'Forest', primary: '#166534', secondary: '#22c55e' },
+    { name: 'Navy', primary: '#1e3a5f', secondary: '#4a7db5' },
+];

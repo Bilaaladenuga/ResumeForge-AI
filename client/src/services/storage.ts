@@ -1,4 +1,4 @@
-import { FormData, StoredDraft, StoredResume, ResumeMeta, ExportedResume, SavedJD } from '../types';
+import { FormData, StoredDraft, StoredResume, ResumeMeta, ExportedResume, SavedJD, TemplateCustomization, DEFAULT_CUSTOMIZATION } from '../types';
 
 const STORAGE_PREFIX = 'resucraft_';
 const OLD_PREFIX = 'resumeforge_';
@@ -448,4 +448,36 @@ export function createJD(title: string, company: string, content: string, url: s
     return jd;
 }
 
+// ─── Template Customization ───
 
+const CUSTOMIZATION_KEY = (templateId: string): string => `${STORAGE_PREFIX}customize_${templateId}`;
+
+export function getCustomization(templateId: string): TemplateCustomization {
+    try {
+        const raw = localStorage.getItem(CUSTOMIZATION_KEY(templateId));
+        if (!raw) return { ...DEFAULT_CUSTOMIZATION };
+        const parsed = JSON.parse(raw);
+        return { ...DEFAULT_CUSTOMIZATION, ...parsed };
+    } catch {
+        return { ...DEFAULT_CUSTOMIZATION };
+    }
+}
+
+export function saveCustomization(templateId: string, customization: TemplateCustomization): boolean {
+    try {
+        localStorage.setItem(CUSTOMIZATION_KEY(templateId), JSON.stringify(customization));
+        return true;
+    } catch (err) {
+        console.error('Failed to save template customization:', err);
+        return false;
+    }
+}
+
+export function clearCustomization(templateId: string): boolean {
+    try {
+        localStorage.removeItem(CUSTOMIZATION_KEY(templateId));
+        return true;
+    } catch {
+        return false;
+    }
+}

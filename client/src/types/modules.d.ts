@@ -73,4 +73,9 @@ declare module 'lucide-react' {
     export const Edit3: Icon;
     export const Undo2: Icon;
     export const Redo2: Icon;
+    export const PaintBucket: Icon;
+    export const Type: Icon;
+    export const Maximize2: Icon;
+    export const Minimize2: Icon;
+    export const RotateCcw: Icon;
 }

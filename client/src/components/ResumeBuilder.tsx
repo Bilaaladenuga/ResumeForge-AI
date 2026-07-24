@@ -1,7 +1,7 @@
 'use client';
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
-import { Sparkles, Settings, Download, ArrowLeft, ShieldCheck, AlertCircle, Save, Upload, Trash2, Linkedin, TrendingUp, Files, ChevronDown, Plus, Edit3, Copy, Check, BookOpen, Undo2, Redo2, MoreHorizontal } from 'lucide-react';
+import { Sparkles, Settings, Download, ArrowLeft, ShieldCheck, AlertCircle, Save, Upload, Trash2, Linkedin, TrendingUp, Files, ChevronDown, Plus, Edit3, Copy, Check, BookOpen, Undo2, Redo2, MoreHorizontal, PaintBucket } from 'lucide-react';
 import ResumeForm from './ResumeForm';
 import ResumePreview from './ResumePreview';
 import AIPanel from './AIPanel';
@@ -12,16 +12,18 @@ import DOCXExportButton from './DOCXExport';
 import ResumeScoreModal from './ResumeScoreModal';
 import ResumeManager from './ResumeManager';
 import SpellCheckModal from './SpellCheckModal';
+import TemplateCustomizerModal from './TemplateCustomizerModal';
 import { getTemplate } from '../templates';
 import { checkApiKey } from '../services/ai';
 import { useUndoRedo } from '../services/undoService';
 import {
     saveDraft, loadDraft, clearDraft, exportResumeAsJSON, importResumeFromJSON,
     getResumeById, saveResume, getResumeIndex, getActiveResumeId,
-    setActiveResumeId, createResume, renameResume, duplicateResume
+    setActiveResumeId, createResume, renameResume, duplicateResume,
+    getCustomization
 } from '../services/storage';
 import { validateSection, validateAllSections, hasErrors } from '../services/validation';
-import { FormData, ValidationErrors, TouchedSections, OpenSections, ResumeMeta } from '../types';
+import { FormData, ValidationErrors, TouchedSections, OpenSections, ResumeMeta, TemplateCustomization, DEFAULT_CUSTOMIZATION } from '../types';
 
 const DEFAULT_FORM_DATA: FormData = {
     firstName: '',
@@ -71,6 +73,8 @@ const ResumeBuilder = () => {
     const [showLinkedInModal, setShowLinkedInModal] = useState(false);
     const [showScoreModal, setShowScoreModal] = useState(false);
     const [showSpellCheck, setShowSpellCheck] = useState(false);
+    const [showCustomizer, setShowCustomizer] = useState(false);
+    const [customization, setCustomization] = useState<TemplateCustomization>(DEFAULT_CUSTOMIZATION);
     const [showResumeDropdown, setShowResumeDropdown] = useState(false);
     const [showMoreMenu, setShowMoreMenu] = useState(false);
     const [resumeList, setResumeList] = useState<ResumeMeta[]>([]);
@@ -113,6 +117,14 @@ const ResumeBuilder = () => {
         const saved = loadDraft(templateId);
         if (saved) {
             setFormData(prev => ({ ...DEFAULT_FORM_DATA, ...saved }));
+        }
+
+        // Load template customization
+        const savedCustom = getCustomization(templateId);
+        const hasCustom = savedCustom.primaryColor || savedCustom.fontFamily ||
+            savedCustom.fontSize !== 'medium' || savedCustom.spacing !== 'normal';
+        if (hasCustom) {
+            setCustomization(savedCustom);
         }
     }, [templateId, searchParams]);
 
@@ -577,6 +589,11 @@ const ResumeBuilder = () => {
                                                             <BookOpen size={13} /> Spell Check
                                                         </button>
                                                         <button className="btn btn-ghost btn-sm"
+                                                            onClick={() => { setShowMoreMenu(false); setShowCustomizer(true); }}
+                                                            style={{ justifyContent: 'flex-start', width: '100%', fontSize: '0.75rem', padding: '0.4rem 0.6rem' }}>
+                                                            <PaintBucket size={13} /> Customize
+                                                        </button>
+                                                        <button className="btn btn-ghost btn-sm"
                                                             onClick={() => { setShowMoreMenu(false); setShowScoreModal(true); }}
                                                             style={{ justifyContent: 'flex-start', width: '100%', fontSize: '0.75rem', padding: '0.4rem 0.6rem' }}>
                                                             <TrendingUp size={13} /> Score
@@ -649,7 +666,7 @@ const ResumeBuilder = () => {
 
                 {/* Right: Preview */}
                 <div className="builder-right">
-                    <ResumePreview formData={formData} templateId={templateId} />
+                    <ResumePreview formData={formData} templateId={templateId} customization={customization} />
                 </div>
             </div>
 
@@ -675,6 +692,15 @@ const ResumeBuilder = () => {
                 isOpen={showSpellCheck}
                 onClose={() => setShowSpellCheck(false)}
                 formData={formData}
+            />
+
+            {/* Template Customizer Modal */}
+            <TemplateCustomizerModal
+                isOpen={showCustomizer}
+                onClose={() => setShowCustomizer(false)}
+                templateId={templateId}
+                current={customization}
+                onApply={(c) => setCustomization(c)}
             />
 
             {/* Resume Manager Modal */}
